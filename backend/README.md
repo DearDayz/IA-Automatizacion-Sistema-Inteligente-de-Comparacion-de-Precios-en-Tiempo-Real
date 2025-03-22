@@ -16,9 +16,10 @@
   source venv/bin/activate
   ```
 
-3. **Instalar las dependencias**:
+3. **Instalar las dependencias (Obligatoriamente en el mismo orden)**:
 
   ```bash
+  pip install torch --index-url https://download.pytorch.org/whl/cpu
   pip install -r requirements.txt
   ```
   
