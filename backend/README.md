@@ -36,7 +36,7 @@ Para ejecutar el servidor, sigue estos pasos:
 2. **Ejecutar el servidor con Uvicorn**:
 
   ```bash
-  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
   ```
 
 ## Acceso a la API

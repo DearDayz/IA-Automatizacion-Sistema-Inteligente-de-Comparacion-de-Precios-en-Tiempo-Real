@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # Python files (FastAPI)
-backend/__pycache__/  
+__pycache__/  
 backend/*.py[cod]      
 backend/*$py.class    
 backend/venv/       
