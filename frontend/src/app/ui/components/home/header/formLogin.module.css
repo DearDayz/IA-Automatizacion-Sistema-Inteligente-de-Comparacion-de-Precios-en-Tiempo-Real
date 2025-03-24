@@ -1,0 +1,90 @@
+.overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.formLogin{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-light-main);
+    padding: 2rem;
+    border-radius: 10px;
+    z-index: 101;
+    box-shadow: 0px 0px 5px 0px var(--color-dark-main);
+    max-width: clamp(400px, 50vw, 500px);
+    width: 100%;
+}
+
+.form__title{
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--color-30-main);
+}
+
+.form__input{
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: .5rem 1rem;
+    border: solid 2px var(--color-medium-main-opacity);
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: .85rem;
+    outline: none;
+}
+
+.form__input:focus{
+    border-color: var(--color-30-secondary);
+    border: 2px solid var(--color-30-secondary);
+}
+
+.form__button{
+    display: block;
+    width: 100%;
+    padding: .5rem 1rem;
+
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-30-main);
+    color: var(--color-light-main);
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color .2s ease-in-out;
+    letter-spacing: 0.05rem;
+    margin-bottom: 1rem;
+    }
+
+.form__button:hover{
+    background-color: var(--color-30-secondary);
+}
+
+.form__footer{
+    display: flex;
+    justify-content: center;
+    color: var(--color-30-main);
+}
+
+.form__footer-link{
+    color: var(--color-30-main);
+    font-weight: bold;
+    margin-left: .5rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.form__close{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    color: var(--color-30-main);
+}

@@ -1,0 +1,90 @@
+.main__content{
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    justify-content: space-around;
+    flex-grow: 1;
+    overflow: auto;
+    scrollbar-color: var(--color-medium-main) var(--color-60-secondary);
+    scrollbar-width: thin;
+}
+
+.main__content-card{
+    width: clamp(262px, 25%, 282px);
+    background-color: var(--color-light-main);
+    padding: .5rem;
+    border-radius: 15px;
+    filter: drop-shadow(0 0 4px #0001)
+}
+
+.main__content-card-image-container{
+    width: 100%;
+    text-align: center;
+}
+
+.main__content-card-image{
+    max-width: 75%;
+    max-height: 200px;
+    height: auto;
+
+}
+
+.main__content-card-info{
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.main__content-card-info > h3{
+    text-align: center;
+    color: var(--color-medium-main);
+}
+
+.main__content-card-info-price-lowest, .main__content-card-info-price-highest, .main__content-card-info-price-mean{
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.main__content-card-info-price-lowest-container-main, .main__content-card-info-price-highest-container-main, .main__content-card-info-price-mean-container-main{
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    color: var(--color-price-lowest);
+}
+
+.main__content-card-info-price-highest-container-main{
+    color: var(--color-price-highest);
+}
+
+.main__content-card-info-price-mean-container-main{
+    color: var(--color-30-main);
+}
+
+.main__content-card-info-price-lowest-logo,
+.main__content-card-info-price-highest-logo{
+    width: 20px;
+}
+
+.main__content-card-info-price-lowest-container-secondary, .main__content-card-info-price-highest-container-secondary, .main__content-card-info-price-mean-container-secondary{
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.main__content-card-info-price-lowest-container-tertiary, .main__content-card-info-price-highest-container-tertiary{
+    display: flex;
+    flex-direction: column;
+}
+.main__content-card-info-price-lowest-price, .main__content-card-info-price-highest-price, .main__content-card-info-price-mean-price{
+    font-weight: bold;
+    text-align: right;
+}
+.main__content-card-info-price-lowest-price-store, .main__content-card-info-price-highest-price-store{
+    color: var(--color-medium-main);
+    font-size: .75rem;
+}
+
+.main__content-card-info-price-mean{
+    border-top: var(--color-medium-main-opacity) solid 1px;
+}

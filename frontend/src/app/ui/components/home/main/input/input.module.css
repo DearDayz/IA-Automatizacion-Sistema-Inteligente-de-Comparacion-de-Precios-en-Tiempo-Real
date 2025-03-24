@@ -1,0 +1,28 @@
+.main__form{
+    max-width: 700px;
+    width: 100%;
+    margin: auto;
+    position: relative;
+    font-family: var(--font-text);
+}
+
+.main__input{
+    width: 100%;
+    display: block;
+    height: 2.5rem;
+    border: none;
+    border: var(--color-30-secondary) solid 1px;
+    border-radius: 15px;
+    padding: 1rem;
+    font-family: inherit;
+    color: var(--color-dark-main);
+    outline: none; /* Esto es mala practica */
+}
+
+.main__button{
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    cursor: pointer;
+}

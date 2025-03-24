@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    --color-price-lowest: #29aa59;
+    --color-price-highest: #e76c6c;
+    --color-light-main: #fff; 
+    --nose: #ff00003a;
+    --color-medium-main: #7A7A7A;
+    --color-medium-main-opacity: #7A7A7A55;
+    --color-dark-main: #1A2A33;
+    --color-60-main: #F2F6FA;
+    --color-60-secondary: #e6f2ff;
+    --color-30-main: #2D9CDB;
+    --color-30-secondary: #A6D8F0;
+    --color-10-main: #DBA863;
+    
+    background-color: var(--color-60-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a{
+    text-decoration: none;
+    color: var(--color-60-main);
+}
+
+button{
+    background: none;
+    border: none;
+}
