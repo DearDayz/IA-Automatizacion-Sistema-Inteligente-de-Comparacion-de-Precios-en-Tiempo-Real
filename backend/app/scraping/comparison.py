@@ -8,6 +8,7 @@ model = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
 def normalize_name(name):
     name = name.lower()
     name = re.sub(r'[^\w\s\%]', ' ', name)  # Eliminar caracteres especiales
+    name = re.sub(r'(\s*None\s*)', ' ', name)  # Eliminar None
     name = re.sub(r'(\d+)\s*(gramos|gr|g)(?=\s|$)', r'\1g', name)  # Reemplazar gramos y gr por g, y unir
     name = re.sub(r'(\d+)\s*(lt|lts|litro|litros|l)(?=\s|$)', r'\1l', name)  # Reemplazar lt por l, y unir
     name = re.sub(r'(\d+)\s*(mililitros|ml)(?=\s|$)', r'\1ml', name)  # Reemplazar lt por l, y unir
