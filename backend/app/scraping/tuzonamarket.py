@@ -1,8 +1,6 @@
-import asyncio
+import asyncio, time, json, re
 from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
-import json
-import time
 
 async def scrape_tuzonamarket():
     start_time = time.time()
@@ -64,12 +62,19 @@ async def scrape_tuzonamarket():
                     image_elem = card.select_one('.img-prin')
 
                     product = {
-                        'title': title_elem.get_text(strip=True) if title_elem else '',
-                        'price': price_elem.get_text(strip=True) if price_elem else '',
+                        'name': title_elem.get_text(strip=True) if title_elem else '',
+                        'price': '',
                         'image': image_elem.get('src') if image_elem else ''
                     }
                     
-                    if product['title'] and product['price']:
+                    if price_elem:
+                        # Extraemos el valor decimal del precio
+                        price_text = price_elem.get_text(strip=True)
+                        price_match = re.search(r"[+-]?\d+([.,]\d+)?", price_text)
+                        if price_match:
+                            product['price'] = price_match.group(0).replace(',', '.')
+
+                    if product['name'] and product['price'] and product['image'] and product not in all_products:
                         all_products.append(product)
 
             await browser.close()

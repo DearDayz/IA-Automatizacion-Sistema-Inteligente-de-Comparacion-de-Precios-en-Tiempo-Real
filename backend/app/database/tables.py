@@ -1,27 +1,27 @@
-from app.database.connection import get_connection, release_connection, initialize_connection_pool
+from app.database.connection import get_connection, release_connection
 
 async def create_tables():
     conn = await get_connection()
     try:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS Item (
-                id INT PRIMARY KEY,
-                nombre VARCHAR(255),
-                categoria VARCHAR(255),
+                id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                name VARCHAR(255),
+                category VARCHAR(255),
                 embedding TEXT
             );
         """)
 
         await conn.execute("""
-            CREATE TABLE IF NOT EXISTS Producto (
-                id INT PRIMARY KEY,
-                nombre VARCHAR(255),
-                tendencia VARCHAR(255),
+            CREATE TABLE IF NOT EXISTS Product (
+                id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                name VARCHAR(255),
+                tendency VARCHAR(255),
                 url VARCHAR(255),
                 item_id INT,
-                precio FLOAT,
-                precio_oferta FLOAT,
-                imagen VARCHAR(255),
+                price FLOAT,
+                sale_price FLOAT,
+                image VARCHAR(255),
                 FOREIGN KEY (item_id) REFERENCES Item(id)
             );
         """)

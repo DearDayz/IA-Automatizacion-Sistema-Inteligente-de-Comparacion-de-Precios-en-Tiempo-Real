@@ -68,11 +68,19 @@ async def scrape_kromi():
                         image_url = 'No se ha encontrado la imagen'
                     
                     product = {
-                        'title': title_elem.get_text(strip=True) if title_elem else '',
-                        'price': price_elem.get_text(strip=True) if price_elem else '',
+                        'name': title_elem.get_text(strip=True) if title_elem else '',
+                        'price': '',
                         'image': image_url
                     }
-                    if product['title'] and product['price']:
+
+                    if price_elem:
+                        # Extraemos el valor decimal del precio
+                        price_text = price_elem.get_text(strip=True)
+                        price_match = re.search(r"[+-]?\d+([.,]\d+)?", price_text)
+                        if price_match:
+                            product['price'] = price_match.group(0)
+
+                    if product['name'] and product['price']:
                         all_products.append(product)
 
             await browser.close()
