@@ -4,26 +4,26 @@ from bs4 import BeautifulSoup
 
 async def scrape_tuzonamarket():
     start_time = time.time()
-    base_url = 'https://www.tuzonamarket.com/carabobo/supermercado'
+    base_url = 'https://www.tuzonamarket.com'
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
         all_products = []
         
         categories = [
-            '/lacteos-y-huevos',
-            '/pan-harinas-cereales',
-            '/pasta-arroz-y-granos',
-            '/salsas',
-            '/aceites-vinagres-y-condimentos',
-            '/azucar-reposteria-y-mezclas',
-            '/chocolates-y-dulces',
-            '/enlatados-y-envasados',
-            '/galletas-y-ponques',
-            '/snacks',
-            '/cafe-e-infusiones',
-            '/caldos-y-sopas',
-            '/sabores-del-mundo',
+            '/carabobo/supermercado/lacteos-y-huevos',
+            '/carabobo/supermercado/pan-harinas-cereales',
+            '/carabobo/supermercado/pasta-arroz-y-granos',
+            '/carabobo/supermercado/salsas',
+            '/carabobo/supermercado/aceites-vinagres-y-condimentos',
+            '/carabobo/supermercado/azucar-reposteria-y-mezclas',
+            '/carabobo/supermercado/chocolates-y-dulces',
+            '/carabobo/supermercado/enlatados-y-envasados',
+            '/carabobo/supermercado/galletas-y-ponques',
+            '/carabobo/supermercado/snacks',
+            '/carabobo/supermercado/cafe-e-infusiones',
+            '/carabobo/supermercado/caldos-y-sopas',
+            '/carabobo/supermercado/sabores-del-mundo',
         ]
         categories_urls = [base_url + categorie for categorie in categories]
 
@@ -59,17 +59,30 @@ async def scrape_tuzonamarket():
 
                     title_elem = card.select_one('.item-nomb a')
                     price_elem = card.select_one('.prec-vent span')
+                    sale_price_elem = card.select_one('.prec-tacha span')
                     image_elem = card.select_one('.img-prin')
+                    url_elem = card.find('a')
 
                     product = {
                         'name': title_elem.get_text(strip=True) if title_elem else '',
                         'price': '',
-                        'image': image_elem.get('src') if image_elem else ''
+                        'sale_price': '',
+                        'image': image_elem.get('src') if image_elem else '',
+                        'url': base_url + url_elem.get('href') if url_elem else ''
                     }
                     
                     if price_elem:
                         # Extraemos el valor decimal del precio
                         price_text = price_elem.get_text(strip=True)
+                        price_match = re.search(r"[+-]?\d+([.,]\d+)?", price_text)
+                        if price_match and sale_price_elem:
+                            product['sale_price'] = price_match.group(0).replace(',', '.')
+                        elif price_match:
+                            product['price'] = price_match.group(0).replace(',', '.')
+
+                    if sale_price_elem:
+                        # Extraemos el valor decimal del precio
+                        price_text = sale_price_elem.get_text(strip=True)
                         price_match = re.search(r"[+-]?\d+([.,]\d+)?", price_text)
                         if price_match:
                             product['price'] = price_match.group(0).replace(',', '.')

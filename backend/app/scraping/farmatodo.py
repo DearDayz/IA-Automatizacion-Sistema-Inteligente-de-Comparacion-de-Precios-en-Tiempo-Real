@@ -78,7 +78,6 @@ async def scrape_farmatodo():
                     image_elem = card.select_one('.product-image__image')
                     
                     product = {
-                        'id': product_id,
                         'name': title_elem.get_text(strip=True) if title_elem else '',
                         'price': '',
                         'sale_price': '',
@@ -102,7 +101,7 @@ async def scrape_farmatodo():
                         if price_match:
                             product['price'] = price_match.group(0)
                     
-                    if product['id'] and product['name'] and product['price']:
+                    if product['name'] and product['price']:
                         all_products.append(product)
 
             await browser.close()
