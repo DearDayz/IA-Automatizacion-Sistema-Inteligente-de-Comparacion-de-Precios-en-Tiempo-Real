@@ -2,6 +2,7 @@ import styles from "./main.module.css";
 import Input from "./input/input";
 import Buttons from "./buttons/buttons";
 import Products from "./products/products";
+import Filter from "./filters/filter";
 export default function Main() {
   return (
     <main className={`${styles["main"]}`}>
@@ -11,7 +12,7 @@ export default function Main() {
             <Buttons />
             <div className={`${styles["main__content-container-main"]}`}>
                 <Products />
-                {/* Container de filtros */}
+                <Filter />
             </div>
         </div>
     </main>

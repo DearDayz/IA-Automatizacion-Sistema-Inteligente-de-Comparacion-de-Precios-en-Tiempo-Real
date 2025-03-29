@@ -1,6 +1,7 @@
-import { rubik,  } from "./ui/fonts";
+import { rubik } from "./ui/fonts";
 import Header from "./ui/components/home/header/header";
 import "./ui/global.css";
+import { GlobalProvider } from "./ui/components/context/GlobalContext";
 
 export default function RootLayout({
   children,
@@ -9,11 +10,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${rubik.className}  antialiased`}
-      >
-        <Header />
-        {children}
+      <body className={`${rubik.className}  antialiased`}>
+        <GlobalProvider>
+          <Header />
+          {children}
+        </GlobalProvider>
       </body>
     </html>
   );

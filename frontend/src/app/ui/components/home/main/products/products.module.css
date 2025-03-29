@@ -14,7 +14,8 @@
     background-color: var(--color-light-main);
     padding: .5rem;
     border-radius: 15px;
-    filter: drop-shadow(0 0 4px #0001)
+    filter: drop-shadow(0 0 4px #0001);
+    margin-bottom: 1rem;
 }
 
 .main__content-card-image-container{

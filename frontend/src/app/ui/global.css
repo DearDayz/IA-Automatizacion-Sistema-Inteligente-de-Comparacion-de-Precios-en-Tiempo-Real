@@ -34,3 +34,8 @@ button{
     background: none;
     border: none;
 }
+
+.expanded{
+    width: 12rem !important;
+    padding: 1rem !important;
+}
