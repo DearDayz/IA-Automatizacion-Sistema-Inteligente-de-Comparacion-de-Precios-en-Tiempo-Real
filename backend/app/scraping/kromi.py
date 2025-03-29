@@ -4,84 +4,87 @@ from bs4 import BeautifulSoup
 
 async def scrape_kromi():
     start_time = time.time()
-    base_url = 'https://www.kromionline.com/'
+    base_url = 'https://www.kromionline.com'
+    product_url_middle = '/Products.php?cat=VIV.'
+    suffix_url = '&suc=UNI02'
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
         all_products = []
-        categories_urls = []
+        categories_suburls = {
+            'alimentos': [
+                'ACT', 'AIN', 'ARZ', 'AVN', 'AZU', 'CIG', 'CMA', 'CON', 'ECN', 'EDM',
+                'ELT', 'ENC', 'LCH', 'LEC', 'MAR', 'MER', 'MIE', 'MTZ', 'MYN', 'PAN',
+                'PAS', 'PST', 'REP', 'SAL', 'SLS', 'SOP', 'VIG', 'GRN', 'HRN'
+            ],
+            'bebidas': [
+                'IFU', 'JUG', 'AGU', 'BEE', 'BEG', 'BEP', 'CAF'
+            ],
+            'dulces y snacks': [
+                'CER', 'CHC', 'DUL', 'GLL', 'GLS', 'GLT', 'PSP'
+            ]
+        }
 
         try:
-            await page.goto(base_url, wait_until="domcontentloaded", timeout=60000)
+            for category_name, suburls in categories_suburls.items():
+                for suburl in suburls:
+                    url = base_url + product_url_middle + suburl + suffix_url
+                    await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                    await page.wait_for_selector('.itemProductoPasilloContainer', timeout=30000)
 
-            categories_button = await page.wait_for_selector('#categoriesButton', timeout=20000)
-            await asyncio.sleep(4)
-            await categories_button.click(timeout=5000)
+                    previous_count = 0
+                    current_count = 0
 
-            await page.wait_for_selector("a[href=\"Products.php?cat=VIV&suc=UNI02\"]")
-            await page.hover("a[href=\"Products.php?cat=VIV&suc=UNI02\"]")
-            await asyncio.sleep(2)
+                    while True:
+                        previous_count = current_count
+                        await page.evaluate("window.scrollTo(0, document.body.scrollHeight);")
+                        try:
+                            await page.wait_for_function(f'() => document.querySelectorAll(".itemProductoPasilloContainer").length > {current_count}', timeout=5000)
+                        except Exception as e:
+                            print('No more products in this url: ', url)
+                            break
+                        current_count = len(await page.query_selector_all('.itemProductoPasilloContainer'))
+                        if current_count == previous_count:
+                            break
 
-            categories = await page.query_selector('.groupsOpt')
-            urls_html = await categories.inner_html()
-            urls_soup = BeautifulSoup(urls_html, 'html.parser')
-            for a in urls_soup.find_all('a'):
-                href = a.get('href')
-                if href:
-                    categories_urls.append(base_url + href)
-            print('Total categories:', len(categories_urls))
+                    html = await page.content()
+                    soup = BeautifulSoup(html, 'html.parser')
+                    product_cards = soup.select('.itemProductoPasilloContainer')
 
-            for url in categories_urls:
-                await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                await page.wait_for_selector('.itemProductoPasilloContainer', timeout=30000)
+                    for card in product_cards:
+                        title_elem = card.select_one('.product-name-carousel-pasillo a')
+                        price_elem = card.select_one('.tag_precio_producto')
+                        image_elem = card.select_one('.imagePasillo')
+                        image_url = ''
 
-                previous_count = 0
-                current_count = 0
+                        pattern = r"(?:(\.\.\/\.\.\/\.\.))?(.+)"
+                        match = re.search(pattern, image_elem.get('src') if image_elem else '')
+                        product_id = None
+                        if match:
+                            image_url = base_url + match.group(2)
+                            id_match = re.search(r"/(\d+)/", match.group(2))
+                            if id_match:
+                                product_id = id_match.group(1)
+                        else:
+                            image_url = 'No se ha encontrado la imagen'
+                        
+                        product = {
+                            'name': title_elem.get_text(strip=True) if title_elem else '',
+                            'price': '',
+                            'sale_price': '',
+                            'image': image_url,
+                            'url': base_url + '/Product.php?code=' + product_id if product_id else '',
+                            'category': category_name  
+                        }
 
-                while True:
-                    previous_count = current_count
-                    await page.evaluate("window.scrollTo(0, document.body.scrollHeight);")
-                    try:
-                        await page.wait_for_function(f'() => document.querySelectorAll(".itemProductoPasilloContainer").length > {current_count}', timeout=5000)
-                    except Exception as e:
-                        print('No more products in this url: ', url)
-                        break
-                    current_count = len(await page.query_selector_all('.itemProductoPasilloContainer'))
-                    if current_count == previous_count:
-                        break
+                        if price_elem:
+                            price_text = price_elem.get_text(strip=True)
+                            price_match = re.search(r"[+-]?\d+([.,]\d+)?", price_text)
+                            if price_match:
+                                product['price'] = price_match.group(0)
 
-                html = await page.content()
-                soup = BeautifulSoup(html, 'html.parser')
-                product_cards = soup.select('.itemProductoPasilloContainer')
-
-                for card in product_cards:
-                    title_elem = card.select_one('.product-name-carousel-pasillo a')
-                    price_elem = card.select_one('.tag_precio_producto')
-                    image_elem = card.select_one('.imagePasillo')
-                    image_url = ''
-
-                    pattern = r"(?:(\.\.\/\.\.\/\.\.\/))?(.+)"
-                    match = re.search(pattern, image_elem.get('src') if image_elem else '')
-                    if match:
-                        image_url = base_url + match.group(2)
-                    else:
-                        image_url = 'No se ha encontrado la imagen'
-                    
-                    product = {
-                        'name': title_elem.get_text(strip=True) if title_elem else '',
-                        'price': '',
-                        'image': image_url
-                    }
-
-                    if price_elem:
-                        # Extraemos el valor decimal del precio
-                        price_text = price_elem.get_text(strip=True)
-                        price_match = re.search(r"[+-]?\d+([.,]\d+)?", price_text)
-                        if price_match:
-                            product['price'] = price_match.group(0)
-
-                    if product['name'] and product['price']:
-                        all_products.append(product)
+                        if product['name'] and product['price']:
+                            all_products.append(product)
 
             await browser.close()
             print(f'Time elapsed: {(time.time() - start_time) / 60} minutes')
