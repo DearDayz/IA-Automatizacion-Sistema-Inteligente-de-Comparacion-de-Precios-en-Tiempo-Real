@@ -1,6 +1,7 @@
 from app.scraping.farmatodo import scrape_farmatodo
 from app.scraping.tuzonamarket import scrape_tuzonamarket
 from app.scraping.kromi import scrape_kromi
+from app.scraping.promarket import scrape_promarket
 from app.scraping.comparison import compare_products, get_embedding, normalize_name
 import asyncio, time, json
 from app.database.connection import get_connection, release_connection
@@ -8,17 +9,13 @@ from app.database.connection import get_connection, release_connection
 async def scrape_pages():
     
     start_time = time.time()
-    # json de prueba
-    with open('/home/alfredo/Projects/AL-cance/farmatodo.json', 'r') as f:
-        scraped_products = [json.load(f)]
-    with open('/home/alfredo/Projects/AL-cance/tuzonamarket.json', 'r') as f:
-        scraped_products.append(json.load(f))
 
-    # scraped_products = await asyncio.gather(
-    #     scrape_farmatodo(),
-    #     scrape_kromi(),
-    #     scrape_tuzonamarket()
-    # )
+    scraped_products = await asyncio.gather(
+        scrape_farmatodo(),
+        # scrape_kromi(),
+        scrape_tuzonamarket(),
+        scrape_promarket()
+    )
 
     if scraped_products:
         await save_to_db(scraped_products)
@@ -95,10 +92,10 @@ async def save_product(conn, product, item_id):
     """,
     normalize_name(product["name"]),
     "",
-    "",
+    product['url'],
     item_id,
     float(product['price']),
-    0.0,
+    float(product['sale_price']),
     product['image']
     )
 
@@ -109,7 +106,7 @@ async def save_item(conn, product):
         RETURNING id
     """,
     normalize_name(product["name"]),
-    "",
+    product["category"],
     json.dumps(product["embedding"].tolist())
     )
     if row:
@@ -118,6 +115,9 @@ async def save_item(conn, product):
         raise Exception("Error al insertar el item")
     
 async def verify_product(conn, product):
+    # Esto no sé si cambiarlo o dejarlo así xd
+    # Pero por ahora funciona usar la imagen ya que siempre es única
+    # Aunque se podría usar también la url
     db_product = await conn.fetch("SELECT name FROM Product WHERE image = $1",
         product["image"]
     )
@@ -127,6 +127,7 @@ async def verify_product(conn, product):
         return False
     
 async def update_product(conn, product):
+    # Lo mismo aquí
     await conn.execute("""
         UPDATE Product
         SET price = $1,
@@ -134,6 +135,6 @@ async def update_product(conn, product):
         WHERE image = $3
     """,
     float(product['price']),
-    0.0,
+    float(product['sale_price']),
     product['image']
     )
