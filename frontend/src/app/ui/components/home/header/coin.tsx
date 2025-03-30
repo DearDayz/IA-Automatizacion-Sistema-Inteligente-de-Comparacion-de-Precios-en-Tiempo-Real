@@ -115,7 +115,7 @@ export default function Coin() {
         </ul>
       </div>
       <Image
-        src="icons/stat_minus.svg"
+        src="/icons/stat_minus.svg"
         alt="coin arrow"
         width={24}
         height={24}

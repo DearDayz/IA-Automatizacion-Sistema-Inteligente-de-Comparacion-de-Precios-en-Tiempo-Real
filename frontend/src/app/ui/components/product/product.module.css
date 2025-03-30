@@ -1,0 +1,12 @@
+.main{
+    flex-grow: 1;
+    max-width: clamp(1000px, 90vw, 1280px);
+    width: 100%;
+    margin: 2rem auto;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--color-dark-main);
+    font-family: var(--font-text);
+    align-items: flex-start;
+}

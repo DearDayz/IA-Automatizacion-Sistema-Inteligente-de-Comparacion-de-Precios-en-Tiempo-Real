@@ -1,0 +1,88 @@
+.tendency{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background-color: var(--color-light-main);
+    border-radius: 15px;
+    filter: drop-shadow(0 0 4px #0001);
+    align-items: center;
+}
+
+.container-tendency-store{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.container-tendency-store + .container-tendency-store{
+    margin-bottom: 0;
+}
+
+.container-title{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .75rem;
+}
+
+.title{
+    font-size: clamp( 1.25rem, 2.5vw, 1.5rem);
+    font-weight: bold;
+    text-align: center;
+    font-weight: 600;
+}
+
+.container-tendency-store-2{
+    background-color: var(--color-60-main);
+    box-shadow: 0 0 4px 0 #0005, 0 0 8px 0 #0005;
+    padding: 1rem;
+    border-radius: 15px;
+    display: flex;
+    gap: 1rem;
+}
+
+.container-tendency-store-info{
+     
+}
+
+.tendency-store-info{
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    margin-bottom: 0rem;
+    font-weight: 600;
+}
+
+.tendency-store-time{
+    color: var(--color-medium-main);
+    margin-bottom: 1rem;
+}
+.tendency-store-price{
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: .3rem;
+}
+
+.tendency-store-line{
+    display: flex;
+    align-items: center;
+}
+
+.bajada{
+    /* margin-left: .5rem; */
+    margin-right: .25rem;
+    color: var(--color-price-lowest);
+}
+
+.subida{
+    /* margin-left: .5rem; */
+    margin-right: .25rem;
+    color: var(--color-price-highest);
+}
+
+.tendency-store-time-2{
+    color: var(--color-medium-main);
+}
+
+.image-tendency-store{
+    width: 175px;
+    height: auto;
+}
