@@ -9,7 +9,7 @@ async def create_tables():
                 name VARCHAR(255),
                 category VARCHAR(255),
                 embedding TEXT,
-                view_count INT
+                view_count INT DEFAULT 0
             );
         """)
 

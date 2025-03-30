@@ -25,7 +25,7 @@ async def get_item_by_id(item_id: int, conn: asyncpg.Connection = Depends(get_db
         raise HTTPException(status_code=500, detail=str(e))
 
 # Ruta para aumentar en uno el contador de vistas del Item según su ID
-@router.put("/{item_id}/view")
+@router.patch("/{item_id}/view")
 async def increment_view_count(item_id: int, conn: asyncpg.Connection = Depends(get_db)):
     try:
         await conn.execute("UPDATE Item SET view_count = view_count + 1 WHERE id = $1", item_id)
