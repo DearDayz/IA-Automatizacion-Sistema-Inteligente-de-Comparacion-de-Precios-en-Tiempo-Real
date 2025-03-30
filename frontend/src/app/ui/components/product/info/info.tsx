@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import Link from "next/link";
 interface Precio {
-  tienda: string /* Los nombres tienen que ser tuzonamarket, farmatodo o kromi */;
+  tienda: string /* Los nombres tienen que ser tuzonamarket, farmatodo, kromi, promarket */;
   precio: number;
   link: string;
 }
@@ -19,6 +19,7 @@ export default function Info({ product }: { product: Product }) {
     tuzonamarket: "/icons/banner-tzm.webp",
     farmatodo: "/icons/banner-farmatodo.svg",
     kromi: "/icons/banner_kromi_1.svg",
+    promarket: "/icons/banner_promarket.png",
     nada: "",
   };
 
@@ -26,6 +27,7 @@ export default function Info({ product }: { product: Product }) {
     if (tienda === "tuzonamarket") return banners.tuzonamarket;
     if (tienda === "farmatodo") return banners.farmatodo;
     if (tienda === "kromi") return banners.kromi;
+    if (tienda === "promarket") return banners.promarket;
     return banners.nada;
   }
 
