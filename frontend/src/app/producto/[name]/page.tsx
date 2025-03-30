@@ -25,12 +25,13 @@ import Tendency from "@/app/ui/components/product/tendency/tendency";
 export default async function ProductPage(props: {
   params?: Promise<{
     name?: string;
-    store?: string;
   }>;
+  searchParams: { store?: string };
 }) {
   const param = await props.params;
   const name = param?.name || "";
   const decodedName = decodeURIComponent(name);
+  const searchParams = await props.searchParams;
   let product = null;
   if (decodedName === "Harina+Pan+1kg") {
     product = {
@@ -87,9 +88,8 @@ export default async function ProductPage(props: {
   const exampleProductTendecy ={
     mean_price: 4.5,
     tendecia_media: 2, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
-    tendencia_store: param?.store == "ftm" ? tendencia_farmatodo : param?.store == "tzm" ? tendencia_tuzonamarket : tendencia_kromi
+    tendencia_store: searchParams?.store == "km" ? tendencia_kromi : searchParams?.store == "tzm" ? tendencia_tuzonamarket : tendencia_farmatodo
   }
-
   return (
     <main className={`${styles["main"]}`}>
       <Info product={exampleProductInfo} />

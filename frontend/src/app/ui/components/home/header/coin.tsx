@@ -76,6 +76,13 @@ export default function Coin() {
       params.set("cash", "ves");
     }
     replace(`${pathname}?${params.toString()}`);
+    const dropdown = document.getElementById("dropdownMonedas");
+    if (dropdown) {
+      dropdown.style.display = "none";
+      setTimeout(() => {
+        dropdown.style.display = "";
+      }, 100);
+    }
   };
 
   return (
@@ -94,7 +101,7 @@ export default function Coin() {
         <span className={styles["header__option-coin-text-select"]}>
           {money}
         </span>
-        <ul className={styles["header__option-coin-list"]}>
+        <ul id="dropdownMonedas" className={styles["header__option-coin-list"]}>
           <li className={styles["header__option-coin-divider"]}></li>
           <li
             onClick={(event) =>

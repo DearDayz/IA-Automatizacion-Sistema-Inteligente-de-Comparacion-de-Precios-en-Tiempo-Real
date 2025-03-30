@@ -1,5 +1,6 @@
 import styles from "./tendency.module.css";
 import Image from "next/image";
+import Dropdown from "./dropdown/dropdown";
 interface TendenciaStore {
   tienda: string;
   price: number;
@@ -22,10 +23,7 @@ export default function Tendency({
       <div className={`${styles["container-tendency-store"]}`}>
         <div className={styles["container-title"]}>
           <h2 className={styles["title"]}>Tendencia</h2>
-          <div className={styles["title"]}>
-            {infoTendency.tendencia_store.tienda}
-          </div>
-          
+          <Dropdown></Dropdown>
         </div>
         <div className={`${styles["container-tendency-store-2"]}`}>
           <div className={`${styles["container-tendency-store-info"]}`}>
@@ -68,12 +66,18 @@ export default function Tendency({
               )}
             </div>
             <span className={`${styles["tendency-store-time-2"]}`}>
-                { infoTendency.tendencia_store.tendecia >= 0 ? "Alcista" : "Bajista" }
+              {infoTendency.tendencia_store.tendecia >= 0
+                ? "Alcista"
+                : "Bajista"}
             </span>
           </div>
           <Image
-          className={ `${styles["image-tendency-store"]}` }
-            src={ infoTendency.tendencia_store.tendecia >= 0 ? "/icons/high_tendency.svg" : "/icons/low_tendency.svg" }
+            className={`${styles["image-tendency-store"]}`}
+            src={
+              infoTendency.tendencia_store.tendecia >= 0
+                ? "/icons/high_tendency.svg"
+                : "/icons/low_tendency.svg"
+            }
             alt="Highest Tendency"
             width={200}
             height={100}
@@ -83,16 +87,12 @@ export default function Tendency({
       <div className={`${styles["container-tendency-store"]}`}>
         <div className={styles["container-title"]}>
           <h2 className={styles["title"]}>Tendencia</h2>
-          <div className={styles["title"]}>
-            Promedio
-          </div>
+          <div className={styles["title"]}>Promedio</div>
         </div>
         <div className={`${styles["container-tendency-store-2"]}`}>
           <div className={`${styles["container-tendency-store-info"]}`}>
             <div className={`${styles["tendency-store-info"]}`}>
-              {infoTendency.tendecia_media>= 0
-                ? "En subida"
-                : "En bajada"}
+              {infoTendency.tendecia_media >= 0 ? "En subida" : "En bajada"}
             </div>
             <div className={`${styles["tendency-store-time"]}`}>
               Ultimos 7 dias
@@ -128,12 +128,16 @@ export default function Tendency({
               )}
             </div>
             <span className={`${styles["tendency-store-time-2"]}`}>
-                { infoTendency.tendecia_media >= 0 ? "Alcista" : "Bajista" }
+              {infoTendency.tendecia_media >= 0 ? "Alcista" : "Bajista"}
             </span>
           </div>
           <Image
-          className={ `${styles["image-tendency-store"]}` }
-            src={ infoTendency.tendecia_media >= 0 ? "/icons/high_tendency.svg" : "/icons/low_tendency.svg" }
+            className={`${styles["image-tendency-store"]}`}
+            src={
+              infoTendency.tendecia_media >= 0
+                ? "/icons/high_tendency.svg"
+                : "/icons/low_tendency.svg"
+            }
             alt="Highest Tendency"
             width={200}
             height={100}

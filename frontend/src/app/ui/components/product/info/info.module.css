@@ -59,12 +59,15 @@
 }
 
 .tuzonamarket{
-    aspect-ratio: 15/2;
+    /* aspect-ratio: 15/2; */
+    width: 108px;
+    border: 2px solid #1f9741;
     background-color: #1f9741;
 }
 
 .kromi{
-    aspect-ratio: 200/89;
+    aspect-ratio: 200 / 89;
     background-color: #0166d3;
-    width: 50px;
+    width: 58px;
+    border: 2px solid #0166d3;
 }

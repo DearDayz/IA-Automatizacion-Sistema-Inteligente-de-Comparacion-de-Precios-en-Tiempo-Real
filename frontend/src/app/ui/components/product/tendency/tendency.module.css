@@ -22,7 +22,8 @@
 .container-title{
     display: flex;
     justify-content: space-between;
-    margin-bottom: .75rem;
+    margin-bottom: 1rem;
+    align-items: center;
 }
 
 .title{
@@ -31,6 +32,8 @@
     text-align: center;
     font-weight: 600;
 }
+
+
 
 .container-tendency-store-2{
     background-color: var(--color-60-main);
@@ -86,3 +89,4 @@
     width: 175px;
     height: auto;
 }
+
