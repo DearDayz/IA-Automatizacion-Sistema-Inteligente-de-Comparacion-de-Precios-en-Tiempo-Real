@@ -36,7 +36,7 @@ async def scrape_tuzonamarket():
             for category_name, category_urls in categories.items():
                 for url in [base_url + cat_url for cat_url in category_urls]:
                     await page.goto(url, wait_until="domcontentloaded", timeout=60000)
-                    await page.wait_for_selector('app-producto-item', timeout=60000)
+                    await page.wait_for_selector('app-producto-item', timeout=80000)
 
                     previous_count = 0
                     current_count = 0
@@ -101,7 +101,7 @@ async def scrape_tuzonamarket():
         except Exception as e:
             print(f'Error: {e}')
             await browser.close()
-            return [{'error': 'Scraping failed'}]
+            return all_products
 
 def save_to_json(data):
     with open('tuzonamarket.json', 'w') as f:

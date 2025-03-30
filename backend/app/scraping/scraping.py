@@ -3,8 +3,8 @@ from app.scraping.tuzonamarket import scrape_tuzonamarket
 from app.scraping.kromi import scrape_kromi
 from app.scraping.promarket import scrape_promarket
 from app.scraping.comparison import compare_products, get_embedding, normalize_name
-import asyncio, time, json
 from app.database.connection import get_connection, release_connection
+import asyncio, time, json, traceback
 
 async def scrape_pages():
     
@@ -14,15 +14,18 @@ async def scrape_pages():
         scrape_farmatodo(),
         # scrape_kromi(),
         scrape_tuzonamarket(),
-        scrape_promarket()
+        # scrape_promarket()
     )
+    print(f'Tiempo en scrapear todas las páginas: {(time.time() - start_time) / 60} minutos')
+    start_time = time.time()
 
     if scraped_products:
-        await save_to_db(scraped_products)
+        result = await save_to_db(scraped_products)
+        print(f'Tiempo en en guardar todos los productos: {(time.time() - start_time) / 60} minutos')
+        return result
     else:
-        print("Error al scrapear las páginas", scraped_products)
+        return ("Error al scrapear las páginas", scraped_products)
 
-    print(f'Tiempo total transcurrido en scrapear todas las páginas: {(time.time() - start_time) / 60} minutos')
 
 async def save_to_db(scraped_products: list):
     try:
@@ -73,8 +76,11 @@ async def save_to_db(scraped_products: list):
                 if not product_saved:
                     item_id = await save_item(conn, product)
                     await save_product(conn, product, item_id)
+        return "Scrapeo realizado exitosamente"
     except Exception as e:
-        print(f"Error: {e}")
+        error_message = f"Error: {type(e).__name__}\n{traceback.format_exc()}"
+        print(error_message)
+        return "Ha ocurrido un error durante el scrapeo."
     finally:
         await release_connection(conn)
 
@@ -95,7 +101,7 @@ async def save_product(conn, product, item_id):
     product['url'],
     item_id,
     float(product['price']),
-    float(product['sale_price']),
+    float(product['sale_price']) if product['sale_price'] != '' else 0.0,
     product['image']
     )
 
@@ -118,6 +124,7 @@ async def verify_product(conn, product):
     # Esto no sé si cambiarlo o dejarlo así xd
     # Pero por ahora funciona usar la imagen ya que siempre es única
     # Aunque se podría usar también la url
+
     db_product = await conn.fetch("SELECT name FROM Product WHERE image = $1",
         product["image"]
     )
@@ -135,6 +142,6 @@ async def update_product(conn, product):
         WHERE image = $3
     """,
     float(product['price']),
-    float(product['sale_price']),
+    float(product['sale_price']) if product['sale_price'] != '' else 0.0,
     product['image']
     )

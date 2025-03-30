@@ -42,8 +42,8 @@ async def scrape_promarket():
             for category_name, suburls in categories_suburls.items():
                 for suburl in suburls:
                     url = base_url + '/tienda/subcategories/' + suburl
-                    await page.goto(url, wait_until='domcontentloaded', timeout=30000)
-                    await page.wait_for_selector('app-producto-item', timeout=30000)
+                    await page.goto(url, wait_until='domcontentloaded', timeout=60000)
+                    await page.wait_for_selector('app-producto-item', timeout=60000)
 
                     previous_count = 0
                     current_count = 0
@@ -98,10 +98,10 @@ async def scrape_promarket():
         except Exception as e:
             print(f'Error: {e}')
             await browser.close()
-            return [{'error': 'Scraping failed'}]
+            return all_products
 
 def save_to_json(data):
-    with open('kromi.json', 'w') as f:
+    with open('promarket.json', 'w') as f:
         json.dump(data, f)
 
 if __name__ == '__main__':

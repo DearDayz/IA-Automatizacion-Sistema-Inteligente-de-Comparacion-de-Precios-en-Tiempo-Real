@@ -13,7 +13,7 @@ async def scrape_farmatodo():
         
         categories = {
             "alimentos": [
-                'https://www.farmatodo.com.ve/categorias/alimentos-y-bebidas/alimentos'
+                'https://www.farmatodo.com.ve/categorias/alimentos-y-bebidas/alimentos/alimentos-basicos'
             ],
             "bebidas": [
                 'https://www.farmatodo.com.ve/categorias/alimentos-y-bebidas/bebidas'
@@ -27,7 +27,7 @@ async def scrape_farmatodo():
             for category_name, category_urls in categories.items():
                 for url in category_urls:
                     await page.goto(url, wait_until="domcontentloaded", timeout=60000)
-                    await page.wait_for_selector('app-product-card', timeout=60000)
+                    await page.wait_for_selector('app-product-card', timeout=80000)
 
                     if select_dollar:
                         currency_exchange = await page.wait_for_selector('.currency-exchange__container', timeout=20000)
@@ -60,7 +60,6 @@ async def scrape_farmatodo():
                                 break
                                 
                         except Exception as e:
-                            print(f"Error: {e}")
                             attempts += 1
                             continue
                         
@@ -119,7 +118,7 @@ async def scrape_farmatodo():
         except Exception as e:
             print(f'Error: {e}')
             await browser.close()
-            return [{'error': 'Scraping failed'}]
+            return all_products
 
 def save_to_json(data):
     with open('farmatodo.json', 'w') as f:

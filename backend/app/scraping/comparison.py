@@ -9,11 +9,13 @@ def normalize_name(name):
     name = name.lower()
     name = re.sub(r'[^\w\s\%]', ' ', name)  # Eliminar caracteres especiales
     name = re.sub(r'(\s*None\s*)', ' ', name)  # Eliminar None
-    name = re.sub(r'(\d+)\s*(gramos|gr|g)(?=\s|$)', r'\1g', name)  # Reemplazar gramos y gr por g, y unir
-    name = re.sub(r'(\d+)\s*(lt|lts|litro|litros|l)(?=\s|$)', r'\1l', name)  # Reemplazar lt por l, y unir
-    name = re.sub(r'(\d+)\s*(mililitros|ml)(?=\s|$)', r'\1ml', name)  # Reemplazar lt por l, y unir
-    name = re.sub(r'(\d+)\s*(und|unds|unidades|unidad)(?=\s|$)', r'\1und', name)  # Reemplazar lt por l, y unir
-    name = re.sub(r'(\d+)\s*(kilo|kilos|kilogramos|kilogramo|kg|kgs)(?=\s|$)', r'\1kg', name)  # Reemplazar gramos y gr por g, y unir
+    
+    # Normalizar unidades
+    name = re.sub(r'(\d+)\s*(gramos|gr|g)(?=\s|$)', r'\1g', name) 
+    name = re.sub(r'(\d+)\s*(lt|lts|litro|litros|l)(?=\s|$)', r'\1l', name)  
+    name = re.sub(r'(\d+)\s*(mililitros|ml)(?=\s|$)', r'\1ml', name)  
+    name = re.sub(r'(\d+)\s*(und|unds|unidades|unidad)(?=\s|$)', r'\1und', name)  
+    name = re.sub(r'(\d+)\s*(kilo|kilos|kilogramos|kilogramo|kg|kgs)(?=\s|$)', r'\1kg', name)  
     name = re.sub(r'\s+', ' ', name)  # Eliminar espacios extra
     return name.strip()
 
