@@ -3,7 +3,7 @@
     align-items: center;
     gap: 0.5rem;
     position: relative;
-
+    z-index: 200;
 }
 
 .header__option-coin-image{

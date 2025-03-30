@@ -1,0 +1,22 @@
+.graphic-container{
+    padding: 1rem;
+    background-color: var(--color-light-main);
+    border-radius: 15px;
+    filter: drop-shadow(0 0 4px #0001);
+    flex-grow: 1;
+}
+
+.title{
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.container{
+    overflow: hidden;
+    background-color: var(--color-60-main);
+    box-shadow: 0 0 4px #0005, 0 0 8px #0005;
+    padding: 1rem;
+    border-radius: 15px;
+
+}

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import styles from "@/app/ui/components/product/product.module.css";
 import Info from "@/app/ui/components/product/info/info";
 import Tendency from "@/app/ui/components/product/tendency/tendency";
+import Graphic from "@/app/ui/components/product/graphic/graphic";
 /* export async function generateMetadata({
   params: { name },
 }: {
@@ -68,7 +69,6 @@ export default async function ProductPage(props: {
   };
 
   // Ejemplo de uso para tendecia
-
   const tendencia_farmatodo = {
     tienda: "farmatodo",
     price: 4,
@@ -90,10 +90,51 @@ export default async function ProductPage(props: {
     tendecia_media: 2, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
     tendencia_store: searchParams?.store == "km" ? tendencia_kromi : searchParams?.store == "tzm" ? tendencia_tuzonamarket : tendencia_farmatodo
   }
+
+  /* Ejemplo de uso para el gráfico */
+  const dataFarmatado = [
+    { time: "2018-12-22", value: 32.51 },
+    { time: "2018-12-23", value: 31.11 },
+    { time: "2018-12-24", value: 27.02 },
+    { time: "2018-12-25", value: 27.32 },
+    { time: "2018-12-26", value: 25.17 },
+    { time: "2018-12-27", value: 28.89 },
+    { time: "2018-12-28", value: 25.46 },
+    { time: "2018-12-29", value: 23.92 },
+    { time: "2018-12-30", value: 22.68 },
+    { time: "2018-12-31", value: 22.67 },
+  ]
+
+  const dataTuzonamarket = [
+    { time: "2019-01-01", value: 22.34 },
+    { time: "2019-01-02", value: 23.12 },
+    { time: "2019-01-03", value: 24.45 },
+    { time: "2019-01-04", value: 23.78 },
+    { time: "2019-01-05", value: 24.56 },
+    { time: "2019-01-06", value: 25.67 },
+    { time: "2019-01-07", value: 26.14 },
+    { time: "2019-01-08", value: 27.89 },
+    { time: "2019-01-09", value: 28.67 },
+    { time: "2019-01-10", value: 29.45 },
+  ]
+
+  const dataKromi = [
+    { time: "2019-01-11", value: 30.56 },
+    { time: "2019-01-12", value: 31.23 },
+    { time: "2019-01-13", value: 32.56 },
+    { time: "2019-01-14", value: 33.98 },
+    { time: "2019-01-15", value: 35.23 },
+    { time: "2019-01-16", value: 36.45 },
+    { time: "2019-01-17", value: 37.56 },
+    { time: "2019-01-18", value: 38.67 },
+    { time: "2019-01-19", value: 39.78 },
+    { time: "2019-01-20", value: 40.89 },
+  ]
   return (
     <main className={`${styles["main"]}`}>
       <Info product={exampleProductInfo} />
-      <Tendency infoTendency={exampleProductTendecy} />
+      <Tendency infoTendency={exampleProductTendecy} /> 
+      <Graphic data={ searchParams?.store == "km" ? dataKromi : searchParams?.store == "tzm" ? dataTuzonamarket : dataFarmatado }/>
     </main>
   );
 }
