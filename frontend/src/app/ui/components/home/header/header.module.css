@@ -1,0 +1,41 @@
+.header {
+  background-color: var(--color-30-main);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  color: var(--color-60-main);
+}
+
+.header__logo-container{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header__logo{
+    width: clamp(3rem, 5vw, 4rem);
+    aspect-ratio: 14/13;
+    height: auto;
+}
+
+.header__name{
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    color: var(--color-60-main);
+}
+
+.header__options-list{
+    list-style: none;
+    display: flex;
+    height: 100%;
+    gap: 2rem;
+}
+
+.header__options-list li:hover ul{
+    display: block;
+}
+
+.header__option-notification{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}

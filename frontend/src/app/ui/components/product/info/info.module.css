@@ -1,0 +1,70 @@
+.info{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: var(--color-light-main);
+    border-radius: 15px;
+    filter: drop-shadow(0 0 4px #0001);
+    align-items: center;
+}
+
+.title{
+    font-size: clamp( 1.25rem, 2.5vw, 1.5rem);
+    font-weight: bold;
+    text-align: center;
+    font-weight: 600;
+}
+
+.container-image{
+    max-width: clamp(150px, 17.5vw, 184px);
+    text-align: center;
+    width: 100%;
+}
+
+.image{
+    width: 100%;
+    height: auto;
+}
+
+.container-precios{
+    width: 100%;
+}
+
+.title-precios{
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    margin-bottom: .75rem;
+    font-weight: 600;
+}
+
+.container-precio{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+    align-items: center;
+}
+
+.precio{
+    margin-right: 1rem;
+}
+
+.image-store{
+    width: 100px;
+    height: auto;
+    border-radius: 0px;
+}
+
+.farmatodo{
+    aspect-ratio: 77/15;
+}
+
+.tuzonamarket{
+    aspect-ratio: 15/2;
+    background-color: #1f9741;
+}
+
+.kromi{
+    aspect-ratio: 200/89;
+    background-color: #0166d3;
+    width: 50px;
+}

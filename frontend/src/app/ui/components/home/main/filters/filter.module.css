@@ -1,0 +1,36 @@
+.main__content-filter{
+
+    width: 0;
+
+    padding: 1rem 0;
+    background-color: var(--color-60-secondary);
+    overflow: hidden;
+    transition: width 0.5s , padding 0.5s;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+}
+
+.main__content-filter-list{
+    list-style: none;
+}
+
+.main__content-filter-item{
+    margin-bottom: 2rem;
+}
+
+.main__content-filter-item-title{
+    margin-bottom: .5rem;
+}
+
+.main__content-filter-item-options{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.label:hover{
+    cursor: pointer;
+    color: var(--color-30-main);
+
+}

@@ -1,0 +1,45 @@
+.main__content-container-options{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.main__content-button-mostPopular{
+    border-radius: 15px;
+    padding: .75rem;
+    color: var(--color-60-main);
+    background-color: var(--color-30-main);
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.main__content-button-mostPopular:hover{
+    background-color: var(--color-60-main);
+    color: var(--color-30-main);
+}
+
+.main__content-button{
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.main__content-container-buttons{
+    display: flex;
+    gap: 1rem;
+}
+
+.main__content-button-sales{
+    background-color: var(--color-10-main);
+    padding: .75rem;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap : .25rem;
+    color: var(--color-60-main);
+}
+
+.main__content-button-filter{
+    background-color: var(--color-60-secondary);
+    border: var(--color-30-secondary) solid 1px;
+    padding: .75rem;
+    border-radius: 15px;
+}

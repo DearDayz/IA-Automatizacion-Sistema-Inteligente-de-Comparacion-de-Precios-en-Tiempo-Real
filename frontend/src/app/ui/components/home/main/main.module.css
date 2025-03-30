@@ -1,0 +1,31 @@
+.main{
+    flex-grow: 1;
+    max-width: clamp(1000px, 90vw, 1280px);
+    width: 100%;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--color-dark-main);
+    font-family: var(--font-text);
+}
+
+.main__title{
+    text-align: center;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: var(--color-dark-main);
+    margin-bottom: 1rem;
+}
+
+.main__content-container{
+    
+    padding: 1rem;
+}
+
+.main__content-container-main{
+    display: flex;
+    gap: .5rem;
+    max-height: 525px;
+}

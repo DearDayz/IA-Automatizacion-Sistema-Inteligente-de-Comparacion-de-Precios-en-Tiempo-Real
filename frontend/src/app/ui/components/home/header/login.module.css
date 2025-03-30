@@ -1,0 +1,15 @@
+.header__option-login{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.header__option-login-link{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header__option-login-text-container{
+    font-weight: bold;
+}
