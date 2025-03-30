@@ -8,7 +8,8 @@ async def create_tables():
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(255),
                 category VARCHAR(255),
-                embedding TEXT
+                embedding TEXT,
+                view_count INT
             );
         """)
 
