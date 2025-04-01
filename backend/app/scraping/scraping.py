@@ -57,7 +57,8 @@ async def save_to_db(scraped_products: list):
                         product["name"],
                         item["name"],
                         product["embedding"],
-                        json.loads(item["embedding"])
+                        json.loads(item["embedding"]),
+                        threshold=0.75
                     )
                     if comparison_result["are_equal"]:
                         product_id = await save_product(conn, product, item["id"])

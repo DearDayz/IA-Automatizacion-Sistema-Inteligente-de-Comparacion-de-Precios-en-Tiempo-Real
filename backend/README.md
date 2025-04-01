@@ -1,22 +1,29 @@
 ## Instalación de Dependencias
 
-1. **Crear un entorno virtual**:
+
+1. **Ubicarte en la carpeta del proyecto**:
+
+  ```bash
+  cd backend
+  ```
+
+2. **Crear un entorno virtual**:
 
   ```bash
     python -m venv venv
   ```
 
-2. **Activar el entorno virtual**:
+3. **Activar el entorno virtual**:
 - En **Windows**:
   ```bash
-  venv\Scripts\activate
+  venv\Scripts\activate.bat
   ```
 - En **Linux/Mac**:
   ```bash
   source venv/bin/activate
   ```
 
-3. **Instalar las dependencias (Obligatoriamente en el mismo orden)**:
+4. **Instalar las dependencias (Obligatoriamente en el mismo orden)**:
 
   ```bash
   pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -25,16 +32,6 @@
   ```
   
 ## Ejecución del Servidor
-
-Para ejecutar el servidor, sigue estos pasos:
-
-1. **Ubicarte en la carpeta del proyecto**:
-
-  ```bash
-  cd backend
-  ```
-
-2. **Ejecutar el servidor**:
 
   ```bash
   fastapi dev main.py
