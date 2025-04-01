@@ -7,7 +7,7 @@ async def scrape_farmatodo():
     select_dollar = True
     base_product_url = 'https://www.farmatodo.com.ve/producto/'
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.chromium.launch(headless=False)
         page = await browser.new_page()
         all_products = []
         

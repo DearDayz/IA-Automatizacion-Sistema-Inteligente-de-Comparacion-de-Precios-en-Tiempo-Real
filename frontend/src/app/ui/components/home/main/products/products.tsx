@@ -3,7 +3,7 @@ import styles from "./products.module.css";
 export default async function Products() {
   const products = [
     {
-        id: 1,
+      id: 1,
       name: "Harina Pan",
       image: "/productos/harina_pan.png",
       lowest: {
@@ -19,7 +19,7 @@ export default async function Products() {
       mean: 4.5,
     },
     {
-        id: 2,
+      id: 2,
       name: "Pepsi 2L",
       image: "/productos/pepsi.webp",
       lowest: {
@@ -35,7 +35,7 @@ export default async function Products() {
       mean: 2,
     },
     {
-        id: 3,
+      id: 3,
       name: "Harina Pan",
       image: "/productos/harina_pan.png",
       lowest: {
@@ -51,7 +51,7 @@ export default async function Products() {
       mean: 4.5,
     },
     {
-        id: 4,
+      id: 4,
       name: "Pepsi 2L",
       image: "/productos/pepsi.webp",
       lowest: {
@@ -67,7 +67,7 @@ export default async function Products() {
       mean: 2,
     },
     {
-        id: 5,
+      id: 5,
       name: "Harina Pan",
       image: "/productos/harina_pan.png",
       lowest: {
@@ -83,7 +83,7 @@ export default async function Products() {
       mean: 4.5,
     },
     {
-        id: 6,
+      id: 6,
       name: "Pepsi 2L",
       image: "/productos/pepsi.webp",
       lowest: {
@@ -99,7 +99,7 @@ export default async function Products() {
       mean: 2,
     },
     {
-        id: 7,
+      id: 7,
       name: "Harina Pan",
       image: "/productos/harina_pan.png",
       lowest: {
@@ -115,7 +115,7 @@ export default async function Products() {
       mean: 4.5,
     },
     {
-        id: 8,
+      id: 8,
       name: "Pepsi 2L",
       image: "/productos/pepsi.webp",
       lowest: {
@@ -127,6 +127,38 @@ export default async function Products() {
         price: 2.5,
         store: "TuZonaMarket",
         image: "/productos/favicon_tuZonaMarke.webp",
+      },
+      mean: 2,
+    },
+    {
+      id: 9,
+      name: "Harina Pan",
+      image: "/productos/harina_pan.png",
+      lowest: {
+        price: 1.11,
+        store: "ProMarket",
+        image: "/productos/favicon__promarket.ico",
+      },
+      highest: {
+        price: 5.5,
+        store: "TuZonaMarket",
+        image: "/productos/favicon_tuZonaMarke.webp",
+      },
+      mean: 4.5,
+    },
+    {
+      id: 10,
+      name: "Pepsi 2L",
+      image: "/productos/pepsi.webp",
+      lowest: {
+        price: 1.5,
+        store: "Farmatodo",
+        image: "/productos/favicon-farmatodopng.png",
+      },
+      highest: {
+        price: 2.5,
+        store: "Kromi",
+        image: "/productos/favicon_kromi.ico",
       },
       mean: 2,
     },
@@ -134,8 +166,7 @@ export default async function Products() {
 
   return (
     <>
-      
-        <div  className={`${styles["main__content"]}`}>
+      <div className={`${styles["main__content"]}`}>
         {products?.map((product) => (
           <div key={product.id} className={`${styles["main__content-card"]}`}>
             <div className={`${styles["main__content-card-image-container"]}`}>
@@ -143,12 +174,12 @@ export default async function Products() {
                 className={`${styles["main__content-card-image"]}`}
                 width={204}
                 height={204}
-                src={ product.image} 
-                alt={ product.name }
+                src={product.image}
+                alt={product.name}
               />
             </div>
             <div className={`${styles["main__content-card-info"]}`}>
-              <h3>{ product.name }</h3>
+              <h3>{product.name}</h3>
               <div
                 className={`${styles["main__content-card-info-price-lowest"]}`}
               >
@@ -187,24 +218,25 @@ export default async function Products() {
                         styles["main__content-card-info-price-lowest-price"]
                       }
                     >
-                      ${ product.lowest.price }
+                      ${product.lowest.price}
                     </span>
                     <span
                       className={
                         styles["main__content-card-info-price-lowest-store"]
                       }
                     >
-                      { product.lowest.store }
+                      {product.lowest.store}
                     </span>
                   </div>
                   <Image
                     className={
-                      styles["main__content-card-info-price-lowest-logo"]
+                      `${ styles["main__content-card-info-price-lowest-logo"]} ${ product.lowest.store == "Kromi" ? styles["kromi"] : "" }`
+                      
                     }
                     width={20}
                     height={20}
-                    src={ product.lowest.image }
-                    alt={ product.lowest.store }
+                    src={product.lowest.image}
+                    alt={product.lowest.store}
                   />
                 </div>
               </div>
@@ -252,25 +284,27 @@ export default async function Products() {
                         styles["main__content-card-info-price-highest-price"]
                       }
                     >
-                      ${ product.highest.price }
+                      ${product.highest.price}
                     </span>
                     <span
                       className={
                         styles["main__content-card-info-price-highest-store"]
                       }
                     >
-                      { product.highest.store }
+                      {product.highest.store}
                     </span>
                   </div>
                   <Image
                     className={
-                      styles["main__content-card-info-price-highest-logo"]
+                      `${ styles["main__content-card-info-price-highest-logo"]} ${ product.highest.store == "Kromi" ? styles["kromi"] : "" }`
                     }
+                    
                     width={20}
                     height={20}
-                    src={ product.highest.image }
-                    alt={ product.highest.store }
+                    src={product.highest.image}
+                    alt={product.highest.store}
                   />
+                  
                 </div>
               </div>
               <div className={styles["main__content-card-info-price-mean"]}>
@@ -308,15 +342,14 @@ export default async function Products() {
                       styles["main__content-card-info-price-mean-price"]
                     }
                   >
-                    ${ product.mean }
+                    ${product.mean}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          ))}
-        </div>
-      
+        ))}
+      </div>
     </>
   );
 }

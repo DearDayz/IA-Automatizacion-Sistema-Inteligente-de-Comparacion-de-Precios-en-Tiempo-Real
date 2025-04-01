@@ -89,3 +89,7 @@
 .main__content-card-info-price-mean{
     border-top: var(--color-medium-main-opacity) solid 1px;
 }
+
+.kromi{
+    background-color: #000;
+}

@@ -3,6 +3,7 @@ import styles from "@/app/ui/components/product/product.module.css";
 import Info from "@/app/ui/components/product/info/info";
 import Tendency from "@/app/ui/components/product/tendency/tendency";
 import Graphic from "@/app/ui/components/product/graphic/graphic";
+
 /* export async function generateMetadata({
   params: { name },
 }: {
@@ -64,6 +65,11 @@ export default async function ProductPage(props: {
         tienda: "kromi",
         precio: 1.02,
         link: "https://www.kromionline.com/Product.php?code=0000004837",
+      },
+      {
+        tienda: "promarket",
+        precio: 1.04,
+        link: "https://www.promarketlatino.com/tienda/products/harina-pan-blanca",
       }
     ],
   };
@@ -84,11 +90,16 @@ export default async function ProductPage(props: {
     price: 4.25,
     tendecia: -2, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
   }
+  const tendencia_promarket = {
+    tienda: "promarket",
+    price: 6.25,
+    tendecia: -0.5, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
+  }
 
   const exampleProductTendecy ={
     mean_price: 4.5,
     tendecia_media: 2, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
-    tendencia_store: searchParams?.store == "km" ? tendencia_kromi : searchParams?.store == "tzm" ? tendencia_tuzonamarket : tendencia_farmatodo
+    tendencia_store: searchParams?.store == "km" ? tendencia_kromi : searchParams?.store == "tzm" ? tendencia_tuzonamarket : searchParams?.store == "pm" ? tendencia_promarket : tendencia_farmatodo
   }
 
   /* Ejemplo de uso para el gráfico */
@@ -130,11 +141,24 @@ export default async function ProductPage(props: {
     { time: "2019-01-19", value: 39.78 },
     { time: "2019-01-20", value: 40.89 },
   ]
+
+  const dataPromarket = [
+    { time: "2019-01-21", value: 41.21 },
+    { time: "2019-01-22", value: 42.45 },
+    { time: "2019-01-23", value: 43.67 },
+    { time: "2019-01-24", value: 45.89 },
+    { time: "2019-01-25", value: 43.11 },
+    { time: "2019-01-26", value: 41.33 },
+    { time: "2019-01-27", value: 40.55 },
+    { time: "2019-01-28", value: 42.77 },
+    { time: "2019-01-29", value: 43.99 },
+    { time: "2019-01-30", value: 45.21 },
+  ]
   return (
     <main className={`${styles["main"]}`}>
       <Info product={exampleProductInfo} />
       <Tendency infoTendency={exampleProductTendecy} /> 
-      <Graphic data={ searchParams?.store == "km" ? dataKromi : searchParams?.store == "tzm" ? dataTuzonamarket : dataFarmatado }/>
+      <Graphic data={ searchParams?.store == "km" ? dataKromi : searchParams?.store == "tzm" ? dataTuzonamarket : searchParams?.store == "pm" ? dataPromarket : dataFarmatado }/>
     </main>
   );
 }

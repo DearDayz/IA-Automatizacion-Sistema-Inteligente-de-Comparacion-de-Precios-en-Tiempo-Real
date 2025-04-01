@@ -10,12 +10,11 @@ async def scrape_pages():
     
     start_time = time.time()
 
-    scraped_products = await asyncio.gather(
-        scrape_farmatodo(),
+    scraped_products = [await scrape_farmatodo()]
         # scrape_kromi(),
-        scrape_tuzonamarket(),
+        #scrape_tuzonamarket(),
         # scrape_promarket()
-    )
+    
     print(f'Tiempo en scrapear todas las páginas: {(time.time() - start_time) / 60} minutos')
     start_time = time.time()
 

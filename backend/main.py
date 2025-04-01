@@ -1,3 +1,9 @@
+import sys
+import asyncio
+
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
 from fastapi import FastAPI, Depends
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -12,6 +18,9 @@ from app.database.connection import (
 )
 
 from app.scraping.scraping import scrape_pages
+
+
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI, conn: asyncpg.Connection = Depends(get_db)):
