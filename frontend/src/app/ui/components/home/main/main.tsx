@@ -4,12 +4,19 @@ import Buttons from "./buttons/buttons";
 import Products from "./products/products";
 import Filter from "./filters/filter";
 
-interface Cash {
-  cash: string
+interface Params {
+  cash?: string;
+    query?: string;
+    mw?: string;
+    offerts?: string;
+    order?: string;
+    brand?: string;
+    page?: string;
 }
 
-export default function Main({ cash }: { cash: Cash }) {
-  console.log("Hola soy el cash", cash);
+export default function Main({ params }: { params: Params }) {
+  /* console.log("hola soy los paraemtros", params); */
+  const paramsFilter = { order: params.order, brand: params.brand };
   return (
     <main className={`${styles["main"]}`}>
         <h2 className={`${styles["main__title"]}`}>Busca tu producto!</h2>
@@ -18,8 +25,7 @@ export default function Main({ cash }: { cash: Cash }) {
             <Buttons />
             <div className={`${styles["main__content-container-main"]}`}>
                 <Products />
-                <Filter />
-                
+                <Filter params={paramsFilter}/>
             </div>
         </div>
     </main>

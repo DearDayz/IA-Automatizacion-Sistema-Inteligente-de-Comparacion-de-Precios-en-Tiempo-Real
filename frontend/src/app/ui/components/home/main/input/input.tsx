@@ -16,7 +16,7 @@ export default function Input() {
     } else {
       params.delete('query'); 
     }
-    replace(`${pathname}?${params.toString()}`); 
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
   return (
     <form className={`${styles["main__form"]}`} action="">
@@ -25,6 +25,7 @@ export default function Input() {
         type="text"
         placeholder="Buscar"
         onChange={(e) => handleSearch(e.target.value)}
+        defaultValue={searchParams.get('query')?.toString()}
       />
       <button className={`${styles["main__button"]}`} type="button">
         <Image

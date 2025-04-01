@@ -1,21 +1,51 @@
 "use client";
 import styles from "./filter.module.css";
+import { useState, useEffect } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
-export default function Filter() {
+interface Params {
+  order?: string;
+  brand?: string;
+}
+
+export default function Filter( { params }: { params: Params } ) {
   const searchParams = useSearchParams(); // Parámetros de la URL actual
   const pathname = usePathname(); // Ruta actual sin query params
   const { replace } = useRouter(); // Para cambiar la URL actual
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+      // Evitamos correr el efecto más de una vez
+      if (!initialized && params !== null) {
+        if (!params.order) {
+          const parametros = new URLSearchParams(searchParams?.toString() || "");
+          parametros.set("order", "lower");
+          replace(`${pathname}?${parametros.toString()}`, { scroll: false });
+          setInitialized(true);
+        }
+        
+      }
+
+      if (initialized && params !== null) {
+        if (!params.order) {
+          const parametros = new URLSearchParams(searchParams?.toString() || "");
+          parametros.set("order", "lower");
+          replace(`${pathname}?${parametros.toString()}`, { scroll: false });
+        }
+      }
+        
+    }, [searchParams, pathname, replace, initialized, params]);
+
   function handleClickMayor() {
     const params = new URLSearchParams(searchParams?.toString() || "");
     params.set("order", "higher");
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   function handleClickMenor() {
     const params = new URLSearchParams(searchParams?.toString() || "");
     params.set("order", "lower");
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   function handleClick(term: string) {
@@ -51,8 +81,20 @@ export default function Filter() {
         params.set("brand", cosa);
     }
     
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
+
+
+  const brands: string[] = [];
+
+  if (params.brand !== undefined) {
+    params.brand.split("-").forEach((brand) => {
+      if (brand !== "") {
+        brands.push(brand);
+      }
+    });
+  }
+
 
   return (
     <div id="filter" className={`${styles["main__content-filter"]}`}>
@@ -70,11 +112,14 @@ export default function Filter() {
                 onClick={handleClickMayor}
                 className={`${styles["label"]}`}
               >
-                <input
+                { params.order !== undefined ? (<input
+                  id = "mayorRadio"
                   className={`${styles["main__content-filter-item-option"]}`}
                   type="radio"
                   name="order"
-                />{" "}
+                  defaultChecked={ params.order === "higher" }
+                />) : <span>Cargando...</span>  }
+                {" "}
                 Mayor a menor
               </label>
             </div>
@@ -83,11 +128,16 @@ export default function Filter() {
                 onClick={handleClickMenor}
                 className={`${styles["label"]}`}
               >
-                <input
+                { params.order !== undefined ? (
+                  <input
+                  id = "menorRadio"
                   className={`${styles["main__content-filter-item-option"]}`}
                   type="radio"
                   name="order"
-                />{" "}
+                  defaultChecked={ params.order === "lower" }
+                />
+                ) : <span>Cargando...</span> }
+                {" "}
                 Menor a mayor
               </label>
             </div>
@@ -106,10 +156,14 @@ export default function Filter() {
                 onClick={() => handleClick("ftm")}
                 className={`${styles["label"]}`}
               >
-                <input
+                { params.order !== undefined ? (
+                  <input
                   className={`${styles["main__content-filter-item-option"]}`}
                   type="checkbox"
-                />{" "}
+                  defaultChecked={ brands.includes("ftm") }
+                />
+                ) : <span>Cargando...</span> }
+                {" "}
                 Farmatodo
               </label>
             </div>
@@ -118,11 +172,47 @@ export default function Filter() {
                 onClick={() => handleClick("zmk")}
                 className={`${styles["label"]}`}
               >
-                <input
+                { params.order !== undefined ? (
+                  <input
                   className={`${styles["main__content-filter-item-option"]}`}
                   type="checkbox"
-                />{" "}
+                  defaultChecked={ brands.includes("zmk") }
+                />
+                ) : <span>Cargando...</span> }
+                {" "}
                 Tu Zona Market
+              </label>
+            </div>
+            <div>
+              <label
+                onClick={() => handleClick("km")}
+                className={`${styles["label"]}`}
+              >
+                { params.order !== undefined ? (
+                  <input
+                  className={`${styles["main__content-filter-item-option"]}`}
+                  type="checkbox"
+                  defaultChecked={ brands.includes("km") }
+                />
+                ) : <span>Cargando...</span> }
+                {" "}
+                Kromi
+              </label>
+            </div>
+            <div>
+              <label
+                onClick={() => handleClick("pm")}
+                className={`${styles["label"]}`}
+              >
+                { params.order !== undefined ? (
+                  <input
+                  className={`${styles["main__content-filter-item-option"]}`}
+                  type="checkbox"
+                  defaultChecked={ brands.includes("pm") }
+                />
+                ) : <span>Cargando...</span> }
+                {" "}
+                Pro Market
               </label>
             </div>
           </form>
