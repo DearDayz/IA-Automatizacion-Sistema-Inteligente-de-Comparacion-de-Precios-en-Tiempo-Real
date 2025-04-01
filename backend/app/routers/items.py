@@ -9,7 +9,7 @@ async def get_items(conn: asyncpg.Connection = Depends(get_db)):
     rows = await conn.fetch("SELECT id, name, category, view_count FROM Item")
     return rows
 
-@router.get("/{item_id}/")
+@router.get("/id/{item_id}/")
 async def get_item_by_id(item_id: int, conn: asyncpg.Connection = Depends(get_db)):
     try:
         row = await conn.fetchrow("SELECT id, name, category, view_count FROM Item WHERE id = $1", item_id)
@@ -25,7 +25,7 @@ async def get_item_by_id(item_id: int, conn: asyncpg.Connection = Depends(get_db
         raise HTTPException(status_code=500, detail=str(e))
 
 # Ruta para aumentar en uno el contador de vistas del Item según su ID
-@router.patch("/{item_id}/view")
+@router.patch("/view/{item_id}/")
 async def increment_view_count(item_id: int, conn: asyncpg.Connection = Depends(get_db)):
     try:
         await conn.execute("UPDATE Item SET view_count = view_count + 1 WHERE id = $1", item_id)
@@ -42,7 +42,7 @@ async def increment_view_count(item_id: int, conn: asyncpg.Connection = Depends(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/items+products/")
+@router.get("/products/")
 async def get_items_and_products(conn: asyncpg.Connection = Depends(get_db)):
     rows = await conn.fetch("""
         SELECT
