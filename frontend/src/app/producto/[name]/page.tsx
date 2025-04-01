@@ -155,10 +155,16 @@ export default async function ProductPage(props: {
     { time: "2019-01-30", value: 45.21 },
   ]
   return (
-    <main className={`${styles["main"]}`}>
+    <>
+      <main className={`${styles["main"]}`}>
       <Info product={exampleProductInfo} />
       <Tendency infoTendency={exampleProductTendecy} /> 
       <Graphic data={ searchParams?.store == "km" ? dataKromi : searchParams?.store == "tzm" ? dataTuzonamarket : searchParams?.store == "pm" ? dataPromarket : dataFarmatado }/>
+      
     </main>
+      <div style={{height: "100vh", width: "100%"} }></div>
+    </>
+    
+    
   );
 }

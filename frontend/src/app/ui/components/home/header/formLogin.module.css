@@ -5,7 +5,7 @@
     width: 100vw;
     height: 100dvh;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
+    z-index: 1000;
 }
 
 .formLogin{
@@ -16,7 +16,7 @@
     background-color: var(--color-light-main);
     padding: 2rem;
     border-radius: 10px;
-    z-index: 101;
+    z-index: 1001;
     box-shadow: 0px 0px 5px 0px var(--color-dark-main);
     max-width: clamp(400px, 50vw, 500px);
     width: 100%;

@@ -21,7 +21,7 @@ export default function Buttons() {
     } else {
       params.set("mw", "true");
     }
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   function handleClickOfertas() {
@@ -31,7 +31,7 @@ export default function Buttons() {
     } else {
       params.set("offerts", "true");
     }
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   return (

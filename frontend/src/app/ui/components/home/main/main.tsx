@@ -3,7 +3,13 @@ import Input from "./input/input";
 import Buttons from "./buttons/buttons";
 import Products from "./products/products";
 import Filter from "./filters/filter";
-export default function Main() {
+
+interface Cash {
+  cash: string
+}
+
+export default function Main({ cash }: { cash: Cash }) {
+  console.log("Hola soy el cash", cash);
   return (
     <main className={`${styles["main"]}`}>
         <h2 className={`${styles["main__title"]}`}>Busca tu producto!</h2>
@@ -13,6 +19,7 @@ export default function Main() {
             <div className={`${styles["main__content-container-main"]}`}>
                 <Products />
                 <Filter />
+                
             </div>
         </div>
     </main>
