@@ -1,0 +1,10 @@
+.button{
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+    font-family: inherit;
+    background-color: var(--color-30-main);
+    color: var(--color-60-main);
+    padding: .75rem;
+    border-radius: 10px;
+}

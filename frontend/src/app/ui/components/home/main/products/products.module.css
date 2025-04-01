@@ -93,3 +93,8 @@
 .kromi{
     background-color: #000;
 }
+
+.container-button {
+    padding: 1rem;
+    width: 100%;
+}

@@ -27,7 +27,8 @@ body {
 
 a{
     text-decoration: none;
-    color: var(--color-60-main);
+    /* color: var(--color-60-main); */
+    color: inherit;
 }
 
 button{
