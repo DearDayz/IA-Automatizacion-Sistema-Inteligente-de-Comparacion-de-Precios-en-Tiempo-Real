@@ -21,6 +21,7 @@
   ```bash
   pip install torch --index-url https://download.pytorch.org/whl/cpu
   pip install -r requirements.txt
+  playwright install
   ```
   
 ## Ejecución del Servidor
@@ -33,10 +34,10 @@ Para ejecutar el servidor, sigue estos pasos:
   cd backend
   ```
 
-2. **Ejecutar el servidor con Uvicorn**:
+2. **Ejecutar el servidor**:
 
   ```bash
-  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  fastapi dev main.py
   ```
 
 ## Acceso a la API
@@ -44,11 +45,11 @@ Para ejecutar el servidor, sigue estos pasos:
 Una vez que el servidor esté en ejecución, puedes acceder a la API mediante la URL:
 
   ```bash
-  http://localhost:8000
+  http://127.0.0.1:8000/
   ```
 
 Para ver la documentación automática de la API, visita:
 
   ```bash
-  http://localhost:8000/docs
+  http://127.0.0.1:8000/docs
   ```
