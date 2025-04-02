@@ -180,6 +180,22 @@ export default async function Products({
       },
       mean: 2,
     },
+    {
+      id: 11,
+      name: "Harina Pan",
+      image: "/productos/harina_pan.png",
+      lowest: {
+        price: 1.11,
+        store: "ProMarket",
+        image: "/productos/favicon__promarket.ico",
+      },
+      highest: {
+        price: 5.5,
+        store: "TuZonaMarket",
+        image: "/productos/favicon_tuZonaMarke.webp",
+      },
+      mean: 4.5,
+    },
   ];
   let showProducts = [];
   if(!parametros.page  || parametros.page === "1") {
@@ -189,6 +205,7 @@ export default async function Products({
     showProducts = products.slice(0, 5 * page);
   }
 
+  const lenghtProducts = products.length;
   const replaceSpaces = (str: string) => str.replace(/\s/g, "+");
 
   return (
@@ -391,7 +408,7 @@ export default async function Products({
           </Link> 
         ))}
         <div className={styles["container-button"]}>
-          <ButtonLoad></ButtonLoad>
+          <ButtonLoad length={lenghtProducts}></ButtonLoad>
         </div>
       </div>
     </>

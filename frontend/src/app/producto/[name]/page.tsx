@@ -162,7 +162,7 @@ export default async function ProductPage(props: {
       <Graphic data={ searchParams?.store == "km" ? dataKromi : searchParams?.store == "tzm" ? dataTuzonamarket : searchParams?.store == "pm" ? dataPromarket : dataFarmatado }/>
       
     </main>
-      <div style={{height: "100vh", width: "100%"} }></div>
+      
     </>
     
     
