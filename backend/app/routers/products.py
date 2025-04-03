@@ -9,10 +9,17 @@ async def get_products(conn: asyncpg.Connection = Depends(get_db)):
     rows = await conn.fetch("SELECT * FROM Product")
     return rows
 
-@router.get("/{product_id}")
+@router.get("/history/{product_id}")
 async def get_product_price_history(product_id: int, conn: asyncpg.Connection = Depends(get_db)):
     try:
-        rows = await conn.fetch("SELECT date, price FROM ProductPrice WHERE product_id = $1", product_id)
+        rows = await conn.fetch("""
+            SELECT date, price
+            FROM ProductPriceHistory
+            WHERE product_id = $1
+            AND date >= CURRENT_DATE - INTERVAL '6 days'
+            ORDER BY date
+            LIMIT 7;
+        """, product_id)
 
         if rows:
             return rows
