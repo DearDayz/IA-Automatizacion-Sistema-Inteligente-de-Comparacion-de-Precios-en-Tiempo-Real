@@ -4,7 +4,7 @@ from app.scraping.kromi import scrape_kromi
 from app.scraping.promarket import scrape_promarket
 from app.scraping.comparison import compare_products, get_embedding, normalize_name
 from app.database.connection import get_connection, release_connection
-import asyncio, time, json, traceback, asyncpg
+import asyncio, time, json, traceback, asyncpg, itertools
 
 async def scrape_pages():
     
@@ -30,52 +30,53 @@ async def scrape_pages():
 async def save_to_db(scraped_products: list):
     try:
         conn = await get_connection()
+        items = await conn.fetch("SELECT * FROM Item")
 
         # Se itera sobre cada lista de productos de cada página
-        for products in scraped_products:
+        all_products = list(itertools.chain.from_iterable(scraped_products))
 
-            # Se itera sobre cada producto de la lista de productos
-            for product in products:
-                # Si ya existe en la bd se debería de solo actualizar el precio
-                # y crear un registro en la tabla de historial de precios
-                db_product = await verify_product(conn, product)
-                if db_product:
-                    print(f"Actualizando producto")
-                    product_id = await update_product(conn, product)
+        # Se itera sobre cada producto de la lista de productos
+        for product in all_products:
+            # Si ya existe en la bd se debería de solo actualizar el precio
+            # y crear un registro en la tabla de historial de precios
+            db_product = await verify_product(conn, product)
+            if db_product:
+                print(f"Actualizando producto")
+                product_id = await update_product(conn, product)
+                await add_to_history(conn, product, product_id)
+                continue
+
+            product["embedding"] = get_embedding(product["name"])                
+            product_saved = False
+
+            # Se itera sobre cada item en bd
+            for item in items:
+
+                # Se compara el producto con el item para ver si son el mismo producto
+                comparison_result = compare_products(
+                    product["name"],
+                    item["name"],
+                    product["embedding"],
+                    json.loads(item["embedding"]),
+                    threshold=0.75
+                )
+                if comparison_result["are_equal"]:
+                    product_id = await save_product(conn, product, item["id"])
                     await add_to_history(conn, product, product_id)
+                    product_saved = True
+                    break
+                # Si no son el mismo producto se sigue iterando
+                else:
                     continue
-
-                items = await conn.fetch("SELECT * FROM Item")
-                product["embedding"] = get_embedding(product["name"])                
-                product_saved = False
-
-                # Se itera sobre cada item en bd
-                for item in items:
-
-                    # Se compara el producto con el item para ver si son el mismo producto
-                    comparison_result = compare_products(
-                        product["name"],
-                        item["name"],
-                        product["embedding"],
-                        json.loads(item["embedding"]),
-                        threshold=0.75
-                    )
-                    if comparison_result["are_equal"]:
-                        product_id = await save_product(conn, product, item["id"])
-                        await add_to_history(conn, product, product_id)
-                        product_saved = True
-                        break
-                    # Si no son el mismo producto se sigue iterando
-                    else:
-                        continue
-                
-                # Si no se encuentra un item que coincida con el producto
-                # O si no hay items en la bd
-                # Se crea tanto el item como el producto
-                if not product_saved:
-                    item_id = await save_item(conn, product)
-                    product_id = await save_product(conn, product, item_id)
-                    await add_to_history(conn, product, product_id)
+            
+            # Si no se encuentra un item que coincida con el producto
+            # O si no hay items en la bd
+            # Se crea tanto el item como el producto
+            if not product_saved:
+                item = await save_item(conn, product)
+                items.append(item)
+                product_id = await save_product(conn, product, item["id"])
+                await add_to_history(conn, product, product_id)
 
         return "Scrapeo realizado exitosamente"
     except Exception as e:
@@ -116,14 +117,14 @@ async def save_item(conn, product):
     row = await conn.fetchrow("""
         INSERT INTO Item (name, category, embedding)
         VALUES ($1, $2, $3)
-        RETURNING id
+        RETURNING *
     """,
     normalize_name(product["name"]),
     product["category"],
     json.dumps(product["embedding"].tolist())
     )
     if row:
-        return row['id']
+        return row
     else:
         raise Exception("Error al insertar el item")
     

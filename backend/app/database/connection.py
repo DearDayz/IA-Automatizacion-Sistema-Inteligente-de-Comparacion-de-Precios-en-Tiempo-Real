@@ -21,7 +21,7 @@ async def initialize_connection_pool():
     except Exception as e:
         print(f"Error al inicializar el pool de conexiones: {e}")
 
-async def get_connection():
+async def get_connection() -> asyncpg.Connection:
     global db_pool
     if db_pool:
         return await db_pool.acquire()
