@@ -36,20 +36,22 @@ export default function Filter( { params }: { params: Params } ) {
         
     }, [searchParams, pathname, replace, initialized, params]);
 
-  function handleClickMayor() {
-    const params = new URLSearchParams(searchParams?.toString() || "");
+  async function handleClickMayor() {
+    const params = await new URLSearchParams(searchParams?.toString() || "");
     params.set("order", "higher");
-    replace(`${pathname}?${params.toString()}`, { scroll: false });
+    params.set("page", "1"); // Resetear la página a 1 al cambiar el filtro
+    await replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
-  function handleClickMenor() {
-    const params = new URLSearchParams(searchParams?.toString() || "");
+  async function handleClickMenor() {
+    const params = await new URLSearchParams(searchParams?.toString() || "");
     params.set("order", "lower");
-    replace(`${pathname}?${params.toString()}`, { scroll: false });
+    params.set("page", "1"); // Resetear la página a 1 al cambiar el filtro
+    await replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
-  function handleClick(term: string) {
-    const params = new URLSearchParams(searchParams?.toString() || "");
+  async function handleClick(term: string) {
+    const params = await new URLSearchParams(searchParams?.toString() || "");
     let cosa = null;
     if (params.get("brand") == null) {
       cosa = term;
@@ -80,8 +82,8 @@ export default function Filter( { params }: { params: Params } ) {
     else{
         params.set("brand", cosa);
     }
-    
-    replace(`${pathname}?${params.toString()}`, { scroll: false });
+    params.set("page", "1"); // Resetear la página a 1 al cambiar el filtro
+    await replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
 
@@ -109,7 +111,7 @@ export default function Filter( { params }: { params: Params } ) {
           >
             <div>
               <label
-                onClick={handleClickMayor}
+                onClick={ handleClickMayor }
                 className={`${styles["label"]}`}
               >
                 { params.order !== undefined ? (<input

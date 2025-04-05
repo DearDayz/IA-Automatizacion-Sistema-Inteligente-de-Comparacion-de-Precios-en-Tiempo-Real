@@ -38,8 +38,6 @@ export default function ButtonLoad( { length }: { length: number }) {
     params.set("page", (Number(searchParams?.get("page")) + 1).toString());
     replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
-  console.log(cantidadActual);
-  console.log(length);
   return (
     (cantidadActual < length) ? (<button onClick={handleClick} className={styles["button"]} type="button">
       Cargar más

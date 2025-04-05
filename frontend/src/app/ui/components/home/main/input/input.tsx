@@ -16,6 +16,7 @@ export default function Input() {
     } else {
       params.delete('query'); 
     }
+    params.set("page", "1"); // Resetear la página a 1 al cambiar el filtro
     replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
   return (

@@ -21,6 +21,7 @@ export default function Buttons() {
     } else {
       params.set("mw", "true");
     }
+    params.set("page", "1"); // Resetear la página a 1 al cambiar el filtro
     replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 

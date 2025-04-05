@@ -12,5 +12,6 @@ export default async function Home(props: {
   };
 }) {
   const searchParams = await props.searchParams;
+  console.log("hola soy el dinero", searchParams.cash);
   return <Main params={searchParams} />;
 }

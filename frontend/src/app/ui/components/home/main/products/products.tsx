@@ -11,15 +11,117 @@ interface Parametros {
   page?: string;
 }
 
+
+
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  view_count: number;
+  min_price: number;
+  max_price: number;
+  avg_price: number;
+  min_price_image: string;
+  max_price_image: string;
+  min_price_page: string;
+  max_price_page: string;
+}
+
+function filterItemsByPage(items: Product[], storeCodes: string): Product[] {
+  // Diccionario para mapear código a nombre de tienda
+  const tiendaMap: { [code: string]: string } = {
+    ftm: "farmatodo",
+    zmk: "tuzonamarket",
+    km: "kromionline",
+    pm: "promarketonline",
+  };
+
+  // Convertimos el string de códigos en un array y filtramos aquellos que existan en el diccionario
+  const codigosSeleccionados = storeCodes
+    .split("-")
+    .map(code => code.trim())
+    .filter(code => tiendaMap.hasOwnProperty(code));
+
+  // Obtenemos las tiendas correspondientes
+  const tiendasSeleccionadas = codigosSeleccionados.map(code => tiendaMap[code]);
+
+  // Filtramos los items que tengan min_price_page o max_price_page en la lista de tiendas seleccionadas
+  const itemsFiltrados = items.filter(item => 
+    tiendasSeleccionadas.includes(item.min_price_page) ||
+    tiendasSeleccionadas.includes(item.max_price_page)
+  );
+
+  // Eliminamos duplicados basándonos en el id (si se repiten)
+  const uniqueItemsMap = new Map<number, Product>();
+  itemsFiltrados.forEach(item => {
+    if (!uniqueItemsMap.has(item.id)) {
+      uniqueItemsMap.set(item.id, item);
+    }
+  });
+
+  return Array.from(uniqueItemsMap.values());
+}
+
+function quitarAcentos(texto: string): string {
+  return texto.replace(/[áéíóú]/g, (letra: string): string => {
+      const acentos: { [key: string]: string } = { 'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u' };
+      return acentos[letra] || letra;
+  });
+}
+
+function ordenarPorViewCount(productos: { view_count: number }[]): typeof productos {
+  return productos.sort((a, b) => b.view_count - a.view_count);
+}
+
+function filterItems(items: any[], params: Parametros) {
+  let filteredItems = [];
+
+  if (params.query) {
+    items.forEach((item) => {
+      if (quitarAcentos(item.name.toLowerCase()).includes(quitarAcentos(params.query?.toLowerCase() || ""))) {
+        filteredItems.push(item);
+      }
+    })
+  } else {
+    filteredItems = items;
+  }
+
+  if (filteredItems.length > 0){
+    if ( params.mw ) {
+      filteredItems = ordenarPorViewCount( filteredItems );
+    } else {
+      if ( params.order === "lower" ) {
+        filteredItems = filteredItems.sort((a, b) => a.avg_price - b.avg_price);
+      } else if ( params.order === "higher" ) {
+        filteredItems = filteredItems.sort((a, b) => b.avg_price - a.avg_price);
+      }
+
+      if ( params.brand ) {
+        filteredItems = filterItemsByPage(filteredItems, params.brand);
+      }
+    }
+  } else {
+    return filteredItems;
+  }
+
+  return filteredItems;
+}
+
+
+
 export default async function Products({
   parametros,
 }: {
   parametros: Parametros;
 }) {
-  console.log(parametros);
+  
+
+  const promise = await fetch("http://127.0.0.1:8000/items/");
+  const AllItems = await promise.json();
+  
 
   // Esto se sustituira por el fetch que utiliza los parametros
-  const products = [
+  /* const products = [
     {
       id: 1,
       name: "Harina Pan 1kg",
@@ -196,7 +298,8 @@ export default async function Products({
       },
       mean: 4.5,
     },
-  ];
+  ]; */
+  const products = filterItems(AllItems, parametros);
   let showProducts = [];
   if(!parametros.page  || parametros.page === "1") {
     showProducts = products.slice(0, 5);
@@ -207,6 +310,16 @@ export default async function Products({
 
   const lenghtProducts = products.length;
   const replaceSpaces = (str: string) => str.replace(/\s/g, "+");
+  const iconsStore = {
+    farmatodo: "/productos/favicon-farmatodopng.png",
+    promarketonline: "/productos/favicon__promarket.ico",
+    tuzonamarket: "/productos/favicon_tuZonaMarke.webp",
+    kromionline: "/productos/favicon_kromi.ico",
+  };
+  
+  function getIconStore(store: keyof typeof iconsStore): string {
+    return iconsStore[store];
+  }
 
   return (
     <>
@@ -225,12 +338,12 @@ export default async function Products({
                   className={`${styles["main__content-card-image"]}`}
                   width={204}
                   height={204}
-                  src={product.image}
+                  src={product.min_price_image}
                   alt={product.name}
                 />
               </div>
               <div className={`${styles["main__content-card-info"]}`}>
-                <h3>{product.name}</h3>
+                <h3>{product.name.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase())}</h3>
                 <div
                   className={`${styles["main__content-card-info-price-lowest"]}`}
                 >
@@ -269,7 +382,7 @@ export default async function Products({
                           styles["main__content-card-info-price-lowest-price"]
                         }
                       >
-                        ${product.lowest.price}
+                        ${product.min_price}
                       </span>
                       <span
                       
@@ -277,19 +390,19 @@ export default async function Products({
                           styles["main__content-card-info-price-lowest-price-store"]
                         }
                       >
-                        {product.lowest.store}
+                        {product.min_price_page}
                       </span>
                     </div>
                     <Image
                       className={`${
                         styles["main__content-card-info-price-lowest-logo"]
                       } ${
-                        product.lowest.store == "Kromi" ? styles["kromi"] : ""
+                        product.min_price_page== "kromionline" ? styles["kromi"] : ""
                       }`}
                       width={20}
                       height={20}
-                      src={product.lowest.image}
-                      alt={product.lowest.store}
+                      src={ getIconStore(product.min_price_page) }
+                      alt={product.min_price_page}
                     />
                   </div>
                 </div>
@@ -339,26 +452,26 @@ export default async function Products({
                           styles["main__content-card-info-price-highest-price"]
                         }
                       >
-                        ${product.highest.price}
+                        ${product.max_price}
                       </span>
                       <span
                         className={
                           styles["main__content-card-info-price-highest-price-store"]
                         }
                       >
-                        {product.highest.store}
+                        {product.max_price_page}
                       </span>
                     </div>
                     <Image
                       className={`${
                         styles["main__content-card-info-price-highest-logo"]
                       } ${
-                        product.highest.store == "Kromi" ? styles["kromi"] : ""
+                        product.max_price_page == "kromionline" ? styles["kromi"] : ""
                       }`}
                       width={20}
                       height={20}
-                      src={product.highest.image}
-                      alt={product.highest.store}
+                      src={ getIconStore(product.max_price_page) }
+                      alt={product.max_price_page}
                     />
                   </div>
                 </div>
@@ -399,7 +512,7 @@ export default async function Products({
                         styles["main__content-card-info-price-mean-price"]
                       }
                     >
-                      ${product.mean}
+                      ${product.avg_price.toFixed(2)}
                     </span>
                   </div>
                 </div>
