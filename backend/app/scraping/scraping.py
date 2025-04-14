@@ -9,6 +9,7 @@ import asyncio, time, json, traceback, asyncpg, itertools
 async def scrape_pages():
     
     start_time = time.time()
+    print("Inicio")
 
     scraped_products = await asyncio.gather(
         # scrape_farmatodo(),
@@ -31,52 +32,113 @@ async def save_to_db(scraped_products: list):
     try:
         conn = await get_connection()
         items = await conn.fetch("SELECT * FROM Item")
-
-        # Se itera sobre cada lista de productos de cada página
         all_products = list(itertools.chain.from_iterable(scraped_products))
+        BATCH_SIZE = 500
 
-        # Se itera sobre cada producto de la lista de productos
-        for product in all_products:
-            # Si ya existe en la bd se debería de solo actualizar el precio
-            # y crear un registro en la tabla de historial de precios
-            db_product = await verify_product(conn, product)
-            if db_product:
-                print(f"Actualizando producto")
-                product_id = await update_product(conn, product)
-                await add_to_history(conn, product, product_id)
-                continue
+        for batch in itertools.batched(all_products, BATCH_SIZE):
+            products_to_insert = []
+            products_to_update = []
+            products_to_add_to_history = []
+            new_items = []
 
-            product["embedding"] = get_embedding(product["name"])                
-            product_saved = False
+            for product in batch:
+                product["embedding"] = get_embedding(product["name"])
+                normalized_product_name = normalize_name(product["name"])
+                matched_item = None
 
-            # Se itera sobre cada item en bd
-            for item in items:
+                for item in items:
+                    item_embedding = json.loads(item["embedding"])
+                    comparison_result = compare_products(
+                        product["name"],
+                        item["name"],
+                        product["embedding"],
+                        item_embedding,
+                        threshold=0.75
+                    )
+                    if comparison_result["are_equal"]:
+                        matched_item = item
+                        break
 
-                # Se compara el producto con el item para ver si son el mismo producto
-                comparison_result = compare_products(
-                    product["name"],
-                    item["name"],
-                    product["embedding"],
-                    json.loads(item["embedding"]),
-                    threshold=0.75
-                )
-                if comparison_result["are_equal"]:
-                    product_id = await save_product(conn, product, item["id"])
-                    await add_to_history(conn, product, product_id)
-                    product_saved = True
-                    break
-                # Si no son el mismo producto se sigue iterando
+                if matched_item:
+                    # Producto coincide con un item existente - actualizar producto
+                    products_to_update.append({**product, 'item_id': matched_item['id']})
+                    products_to_add_to_history.append(product)
                 else:
-                    continue
-            
-            # Si no se encuentra un item que coincida con el producto
-            # O si no hay items en la bd
-            # Se crea tanto el item como el producto
-            if not product_saved:
-                item = await save_item(conn, product)
-                items.append(item)
-                product_id = await save_product(conn, product, item["id"])
-                await add_to_history(conn, product, product_id)
+                    # Producto no coincide con ningún item - crear nuevo item y producto
+                    new_item = {
+                        'name': normalized_product_name,
+                        'category': product['category'],
+                        'embedding': json.dumps(product["embedding"].tolist())
+                    }
+                    new_items.append(new_item)
+                    products_to_insert.append(product)
+                    products_to_add_to_history.append(product)
+
+            # Insertar nuevos items
+            if new_items:
+                new_item_records = await conn.fetchmany("""
+                    INSERT INTO Item (name, category, embedding)
+                    VALUES ($1, $2, $3)
+                    RETURNING id, name, embedding
+                """, [(item['name'], item['category'], item['embedding']) for item in new_items])
+                for record in new_item_records:
+                    items.append(dict(record))
+
+            # Insertar nuevos productos y obtener sus IDs para el historial
+            product_insert_values = []
+            products_to_insert_with_temp_id = [] # Para relacionar con el item fácilmente
+            for product in products_to_insert:
+                normalized_name = normalize_name(product["name"])
+                item_to_link = next((item for item in items if normalize_name(item['name']) == normalized_name and json.loads(item['embedding']) == product['embedding'].tolist()), None)
+                if item_to_link:
+                    product_insert_values.append((
+                        normalized_name, "", product['url'], item_to_link['id'],
+                        float(product['price']), float(product['sale_price']) if product['sale_price'] != '' else 0.0, product['image']
+                    ))
+                    products_to_insert_with_temp_id.append(product) # Mantener el producto original
+
+            inserted_product_ids = []
+            if product_insert_values:
+                product_records = await conn.fetchmany("""
+                    INSERT INTO Product (name, tendency, url, item_id, price, sale_price, image)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    RETURNING id, image
+                """, product_insert_values)
+                inserted_product_ids = {record['image']: record['id'] for record in product_records}
+
+            # Actualizar productos existentes
+            if products_to_update:
+                update_values = [
+                    (float(p['price']), float(p['sale_price']) if p['sale_price'] != '' else 0.0, p['image'])
+                    for p in products_to_update
+                ]
+                await conn.executemany("""
+                    UPDATE Product
+                    SET price = $1,
+                        sale_price = $2
+                    WHERE image = $3
+                """, update_values)
+
+            # Guardar el historial de precios (ahora usando los IDs obtenidos)
+            if products_to_add_to_history:
+                history_values = []
+                for product in products_to_add_to_history:
+                    product_id_for_history = inserted_product_ids.get(product['image']) # Buscar si fue recién insertado
+                    if not product_id_for_history:
+                        # Si no fue recién insertado, buscar el ID por imagen (asumiendo que la imagen es única para el producto)
+                        product_row = await conn.fetchrow("SELECT id FROM Product WHERE image = $1", product['image'])
+                        if product_row:
+                            product_id_for_history = product_row['id']
+
+                    if product_id_for_history:
+                        price = float(product["sale_price"] if product["sale_price"] and product["sale_price"].strip() else product["price"])
+                        history_values.append((price, product_id_for_history)) # No incluimos la fecha aquí
+
+                if history_values:
+                    await conn.executemany("""
+                        INSERT INTO ProductPriceHistory (date, price, product_id)
+                        VALUES (CURRENT_DATE, $1, $2)
+                    """, history_values)
 
         return "Scrapeo realizado exitosamente"
     except Exception as e:
@@ -85,6 +147,7 @@ async def save_to_db(scraped_products: list):
         return "Ha ocurrido un error durante el scrapeo."
     finally:
         await release_connection(conn)
+
 
 # ----------------------------------------------
 
