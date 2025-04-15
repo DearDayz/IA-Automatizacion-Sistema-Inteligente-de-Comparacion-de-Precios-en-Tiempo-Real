@@ -1,5 +1,4 @@
-## Instalación de Dependencias
-
+# Instalación de Dependencias
 
 1. **Ubicarte en la carpeta del proyecto**:
 
@@ -14,11 +13,15 @@
   ```
 
 3. **Activar el entorno virtual**:
+
 - En **Windows**:
+
   ```bash
   venv\Scripts\activate.bat
   ```
+
 - En **Linux/Mac**:
+
   ```bash
   source venv/bin/activate
   ```

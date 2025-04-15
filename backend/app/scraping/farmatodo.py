@@ -7,7 +7,7 @@ async def scrape_farmatodo():
     select_dollar = True
     base_product_url = 'https://www.farmatodo.com.ve/producto/'
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         all_products = []
         
@@ -26,7 +26,7 @@ async def scrape_farmatodo():
         try:
             for category_name, category_urls in categories.items():
                 for url in category_urls:
-                    await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                    await page.goto(url, wait_until="domcontentloaded", timeout=80000)
                     await page.wait_for_selector('app-product-card', timeout=80000)
 
                     if select_dollar:
@@ -113,6 +113,7 @@ async def scrape_farmatodo():
 
             await browser.close()
             print(f'Time elapsed: {(time.time() - start_time) / 60} minutes')
+            print(f"Productos de Farmatodo: ", len(all_products))
             return all_products
 
         except Exception as e:

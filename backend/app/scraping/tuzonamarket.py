@@ -6,7 +6,7 @@ async def scrape_tuzonamarket():
     start_time = time.time()
     base_url = 'https://www.tuzonamarket.com'
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         all_products = []
 
@@ -35,7 +35,7 @@ async def scrape_tuzonamarket():
         try:
             for category_name, category_urls in categories.items():
                 for url in [base_url + cat_url for cat_url in category_urls]:
-                    await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                    await page.goto(url, wait_until="domcontentloaded", timeout=80000)
                     await page.wait_for_selector('app-producto-item', timeout=80000)
 
                     previous_count = 0
@@ -101,6 +101,7 @@ async def scrape_tuzonamarket():
         except Exception as e:
             print(f'Error: {e}')
             await browser.close()
+            print(f"Productos de TuZonaMarket: ", len(all_products))
             return all_products
 
 def save_to_json(data):

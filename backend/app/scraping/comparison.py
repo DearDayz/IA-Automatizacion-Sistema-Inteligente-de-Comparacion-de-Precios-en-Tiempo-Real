@@ -1,5 +1,4 @@
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 import re
 
 # Modelo
@@ -19,44 +18,28 @@ def normalize_name(name):
     name = re.sub(r'\s+', ' ', name)  # Eliminar espacios extra
     return name.strip()
 
-def compare_products(product, item, product_embedding, item_embedding, threshold=0.8):
+def compare_units(product, item):
     """
-    Compara los nombres de dos productos utilizando embeddings y cosine similarity.
+    Compara las unidades de dos productos.
     
     Args:
         product (str): Nombre del producto.
         item (str): Nombre del item.
-        product_embedding (str): Embedding del producto.
-        item_embedding (str): Embedding del item.
-        threshold (float): Umbral para determinar si los productos son iguales (por defecto 0.8).
     
     Returns:
-        dict: Resultado con la similitud y si son considerados iguales.
+        dict: Si son considerados iguales.
     """
     p1 = re.search(r'\d+[a-zA-Z]+', normalize_name(product))
     p2 = re.search(r'\d+[a-zA-Z]+', normalize_name(item))
 
     if p1 and p2:
         if p1.group(0) != p2.group(0):
-            return {
-                "similarity_score": 0,
-                "are_equal": False,
-            }
+            return {"are_equal": False}
     
     if (p1 and not p2) or (not p1 and p2):
-        return {
-            "similarity_score": 0,
-            "are_equal": False,
-        }
+        return {"are_equal": False}
     
-    similarity = cosine_similarity([product_embedding], [item_embedding])[0][0]
-    
-    are_equal = similarity >= threshold
-
-    return {
-        "similarity_score": similarity,
-        "are_equal": are_equal,
-    }
+    return {"are_equal": True}
 
 def get_embedding(name):
     """

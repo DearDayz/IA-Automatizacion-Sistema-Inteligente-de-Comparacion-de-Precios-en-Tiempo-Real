@@ -10,14 +10,12 @@ async def create_tables():
         """)
         print("Extensión vector creada o ya existente.")
 
-        # Modificar la tabla Item para usar el tipo de dato vector
         await conn.execute("""
-            DROP TABLE IF EXISTS Item CASCADE;
             CREATE TABLE IF NOT EXISTS Item (
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(255),
                 category VARCHAR(255),
-                embedding vector(1536), -- Cambiado a tipo vector
+                embedding vector(384), 
                 view_count INT DEFAULT 0
             );
         """)
