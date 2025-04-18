@@ -17,7 +17,7 @@ async def get_product_price_history(product_id: int, conn: asyncpg.Connection = 
             FROM ProductPriceHistory
             WHERE product_id = $1
             AND date >= CURRENT_DATE - INTERVAL '6 days'
-            ORDER BY date
+            ORDER BY date DESC
             LIMIT 7;
         """, product_id)
 
