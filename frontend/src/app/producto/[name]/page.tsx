@@ -4,25 +4,61 @@ import Info from "@/app/ui/components/product/info/info";
 import Tendency from "@/app/ui/components/product/tendency/tendency";
 import Graphic from "@/app/ui/components/product/graphic/graphic";
 
-/* export async function generateMetadata({
-  params: { name },
-}: {
-  params: { name: string };
-}) {
-  const decodedName = decodeURIComponent(name);
-  let title = "";
-  let description = "";
+interface Product {
+  id: number;
+  name: string;
+  tendency: string;
+  url: string;
+  price: number;
+  image: string;
+  history: { date: string; price: number }[];
+}
 
-  if (decodedName === "Harina Pan 1kg") {
-    title = "Harina Pan 1kg";
-    description = "Harina Pan 1kg la tradicional";
+function getTendency(product: Product) {
+  let tendencia = 0;
+  const priceArray = product.history.map(entry => entry.price);
+  let daysPerPrice = 0;
+  let sumDays = 0;
+  let sumDaysSquared = 0;
+  let sumPrices = 0;
+  for (let i = 0; i < priceArray.length; i++) {
+    daysPerPrice += priceArray[i] * (i+1);
+    sumDays += (i+1);
+    sumPrices += priceArray[i];
+    sumDaysSquared += (i+1) * (i+1);
+  }
+  const slope = (priceArray.length * daysPerPrice - sumDays * sumPrices) / (priceArray.length * sumDaysSquared - sumDays * sumDays);
+  const intercept = (sumPrices - slope * sumDays) / priceArray.length;
+  const predictionPrice = slope * (priceArray.length + 1) + intercept;
+  const currentPrice = product.price;
+  tendencia = Math.round( (((predictionPrice - currentPrice) / currentPrice) * 100) * 100) / 100;
+  let tienda = "";
+  if (product.url.includes("farmatodo")) {
+    tienda = "farmatodo";
+  } else if (product.url.includes("tuzonamarket")) {
+    tienda = "tuzonamarket";
+  } else if (product.url.includes("kromionline")) {
+    tienda = "kromio";
+  } else if (product.url.includes("promarketlatino")) {
+    tienda = "promarket";
+  }
+  return { tienda: tienda, price: product.price  , tendencia: tendencia };
+}
+
+function getPrices(product: Product) {
+  let tienda = "";
+  if (product.url.includes("farmatodo")) {
+    tienda = "farmatodo";
+  } else if (product.url.includes("tuzonamarket")) {
+    tienda = "tuzonamarket";
+  } else if (product.url.includes("kromionline")) {
+    tienda = "kromio";
+  } else if (product.url.includes("promarketlatino")) {
+    tienda = "promarket";
   }
 
-  return {
-    title: title || "Producto no encontrado",
-    description: description || "Producto no encontrado",
-  };
-} */
+  return { tienda: tienda, precio: product.price, link: product.url };
+}
 
 export default async function ProductPage(props: {
   params?: Promise<{
@@ -30,48 +66,32 @@ export default async function ProductPage(props: {
   }>;
   searchParams: { store?: string };
 }) {
+
   const param = await props.params;
   const name = param?.name || "";
   const decodedName = decodeURIComponent(name);
+  
+  const decodeNameArray = decodedName.split("+");
+  const id = decodeNameArray[decodeNameArray.length - 1].slice(2);
   const searchParams = await props.searchParams;
-  let product = null;
-  if (decodedName === "Harina+Pan+1kg") {
-    product = {
-      name: "Harina Pan 1kg", /* Con este nombre se haria el fetch */
-      mean: 4.5,
-    };
-  }
-
+  const url = 'https://n5tz68kn-8000.use.devtunnels.ms/items/id/' + id + '/';
+  const product = await fetch(url, {
+    next: { revalidate: 60*30 }   // cache por 60 min antes de volver a fetch
+  }).then(res => {
+    if (!res.ok) throw new Error(res.statusText);
+    return res.json();
+  }); 
   if (!product) {
     notFound();
   }
 
-  // Ejemplo de uso para Info
+  
   const exampleProductInfo = {
-    name: product.name,
-    image: "/productos/harina_pan.png",
-    precios: [
-      {
-        tienda: "farmatodo",
-        precio: 1.02,
-        link: "https://www.farmatodo.com.ve/producto/111016370-harina-pan-de-maiz-1kg",
-      },
-      {
-        tienda: "tuzonamarket",
-        precio: 0.89,
-        link: "https://tuzonamarket.com/carabobo/producto/harina-maiz-blanco-pan-1-kg",
-      },
-      {
-        tienda: "kromi",
-        precio: 1.02,
-        link: "https://www.kromionline.com/Product.php?code=0000004837",
-      },
-      {
-        tienda: "promarket",
-        precio: 1.04,
-        link: "https://www.promarketlatino.com/tienda/products/harina-pan-blanca",
-      }
-    ],
+    name: product.name.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase()),
+    image: product.products[0].image,
+    precios: product.products.map((producto: Product) => {
+      return getPrices(producto);
+    }),
   };
 
   // Ejemplo de uso para tendecia
@@ -96,11 +116,39 @@ export default async function ProductPage(props: {
     tendecia: -0.5, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
   }
 
-  const exampleProductTendecy ={
-    mean_price: 4.5,
-    tendecia_media: 2, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
-    tendencia_store: searchParams?.store == "km" ? tendencia_kromi : searchParams?.store == "tzm" ? tendencia_tuzonamarket : searchParams?.store == "pm" ? tendencia_promarket : tendencia_farmatodo
+  interface Tendencia {
+    tienda: string;
+    price: number;
+    tendencia: number;
   }
+  interface Tendencias {
+    tuzonamarket: Tendencia;
+    farmatodo: Tendencia;
+    kromi: Tendencia;
+    promarket: Tendencia;
+  }
+  
+
+
+  const tendencias = {} as Tendencias;
+  for (const producto of product.products) {
+    const tendencia = getTendency(producto);
+    tendencias[tendencia.tienda] = tendencia;
+  }
+
+  const meanPrice = Math.round((product.products.reduce((acc: number, producto: Product) => acc + producto.price, 0) / product.products.length) * 100) / 100;
+  const meanTendencia = Math.round((product.products.reduce((acc: number, producto: Product) => acc + getTendency(producto).tendencia, 0) / product.products.length) * 100) / 100;
+
+
+
+  const exampleProductTendecy ={
+    mean_price: meanPrice,
+    tendecia_media: meanTendencia, /* Esto no se si es que subio 2% en los ultimos dias o es una prediccion? */
+    tendencia_store: searchParams?.store == "km" ? tendencias["kromi"] : searchParams?.store == "tzm" ? tendencias["tuzonamarket"] : searchParams?.store == "pm" ? tendencias["promarket"] : searchParams?.store == "fm" ? tendencias["farmatodo"] : Object.values(tendencias)[0],
+  }
+
+  const tiendas = Object.keys(tendencias);
+
 
   /* Ejemplo de uso para el gráfico */
   const dataFarmatado = [
@@ -158,7 +206,7 @@ export default async function ProductPage(props: {
     <>
       <main className={`${styles["main"]}`}>
       <Info product={exampleProductInfo} />
-      <Tendency infoTendency={exampleProductTendecy} /> 
+      <Tendency infoTendency={exampleProductTendecy} includedStores={tiendas}/> 
       <Graphic data={ searchParams?.store == "km" ? dataKromi : searchParams?.store == "tzm" ? dataTuzonamarket : searchParams?.store == "pm" ? dataPromarket : dataFarmatado }/>
       
     </main>

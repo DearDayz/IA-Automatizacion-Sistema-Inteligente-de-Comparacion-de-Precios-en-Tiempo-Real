@@ -3,6 +3,7 @@ import styles from "./filter.module.css";
 import { useState, useEffect } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
+
 interface Params {
   order?: string;
   brand?: string;

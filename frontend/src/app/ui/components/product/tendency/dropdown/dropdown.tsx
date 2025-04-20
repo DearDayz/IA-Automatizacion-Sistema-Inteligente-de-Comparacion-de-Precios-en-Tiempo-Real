@@ -3,17 +3,28 @@ import Image from "next/image";
 import styles from "./dropdown.module.css";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-export default function Dropdown() {
+
+
+
+export default function Dropdown({includedStores}: {includedStores: string[]}) {
   const searchParams = useSearchParams(); // Parámetros de la URL actual
   const pathname = usePathname(); // Ruta actual sin query params
   const { replace } = useRouter(); // Para cambiar la URL actual
   const [initialized, setInitialized] = useState(false);
+  const tiendaMapReversa: { [name: string]: string } = {
+    farmatodo: "ftm",
+    tuzonamarket: "tzm",
+    kromionline: "km",
+    promarketonline: "pm",
+  };
+  
 
   useEffect(() => {
     if (!initialized && searchParams && pathname) {
       if (!searchParams?.get("store")) {
         const params = new URLSearchParams(searchParams?.toString() || "");
-        params.set("store", "fmt");
+        
+        params.set("store", tiendaMapReversa[includedStores[0]]);
         replace(`${pathname}?${params.toString()}`);
       }
       setInitialized(true);
@@ -26,10 +37,11 @@ export default function Dropdown() {
       searchParams?.get("store") !== "pm"
     ) {
       const params = new URLSearchParams(searchParams?.toString() || "");
-      params.set("store", "fmt");
+      params.set("store", tiendaMapReversa[includedStores[0]]);
+      
       replace(`${pathname}?${params.toString()}`);
     }
-  }, [initialized, searchParams, pathname, replace, setInitialized]);
+  }, [initialized, searchParams, pathname, replace, setInitialized, includedStores, tiendaMapReversa]);
 
   function onClick(event: any) {
     const element = event.target;

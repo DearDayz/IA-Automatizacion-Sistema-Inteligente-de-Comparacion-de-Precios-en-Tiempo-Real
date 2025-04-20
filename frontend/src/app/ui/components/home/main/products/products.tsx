@@ -116,8 +116,13 @@ export default async function Products({
 }) {
   
 
-  const promise = await fetch("http://127.0.0.1:8000/items/");
-  const AllItems = await promise.json();
+  const AllItems = await fetch('https://n5tz68kn-8000.use.devtunnels.ms/items/', {
+    next: { revalidate: 60*60 }   // cache por 60 min antes de volver a fetch
+  }).then(res => {
+    if (!res.ok) throw new Error(res.statusText);
+    return res.json();
+  }); 
+  
   
 
   // Esto se sustituira por el fetch que utiliza los parametros
@@ -312,7 +317,7 @@ export default async function Products({
   const replaceSpaces = (str: string) => str.replace(/\s/g, "+");
   const iconsStore = {
     farmatodo: "/productos/favicon-farmatodopng.png",
-    promarketonline: "/productos/favicon__promarket.ico",
+    promarketlatino: "/productos/favicon__promarket.ico",
     tuzonamarket: "/productos/favicon_tuZonaMarke.webp",
     kromionline: "/productos/favicon_kromi.ico",
   };
@@ -326,7 +331,7 @@ export default async function Products({
       <div className={`${styles["main__content"]}`}>
         {showProducts?.map((product) => (
           <Link
-            href={`/producto/${replaceSpaces(product.name)}`}
+            href={`/producto/${replaceSpaces(product.name)}+id${product.id}`}
             key={product.id}
             className={`${styles["main__content-card"]}`}
           >
