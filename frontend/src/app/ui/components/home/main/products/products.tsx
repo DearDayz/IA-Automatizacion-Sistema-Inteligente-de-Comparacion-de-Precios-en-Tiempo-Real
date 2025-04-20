@@ -307,10 +307,10 @@ export default async function Products({
   const products = filterItems(AllItems, parametros);
   let showProducts = [];
   if(!parametros.page  || parametros.page === "1") {
-    showProducts = products.slice(0, 5);
+    showProducts = products.slice(0, 15);
   } else{
     const page = Number(parametros.page);
-    showProducts = products.slice(0, 5 * page);
+    showProducts = products.slice(0, 15 * page);
   }
 
   const lenghtProducts = products.length;

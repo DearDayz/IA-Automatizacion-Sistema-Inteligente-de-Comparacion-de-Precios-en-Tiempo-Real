@@ -26,16 +26,16 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    console.log("hola");
-    const response = await fetch(
-      "https://bcv-exchange-rates.vercel.app/get_exchange_rates"
-    );
 
-    if (!response.ok) {
-      throw new Error(`Error en la petición: ${response.statusText}`);
-    }
+    const response = await fetch("https://bcv-exchange-rates.vercel.app/get_exchange_rates", {
+      next: { revalidate: 60 * 30 }
+    }).then(res => {
+      if (!res.ok) throw new Error(res.statusText);
+      return  res.json();
+    });
 
-    const data: ExchangeRateResponse = await response.json();
+
+    const data: ExchangeRateResponse = response;
 
     res.status(200).json(data);
   } catch (error) {

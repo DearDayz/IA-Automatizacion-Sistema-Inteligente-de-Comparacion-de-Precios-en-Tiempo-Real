@@ -38,6 +38,12 @@
     font-weight: 600;
 }
 
+.container-title{
+    display: flex;
+    justify-content: space-between;
+    
+}
+
 .container-precio{
     display: flex;
     justify-content: space-between;
@@ -47,6 +53,11 @@
 
 .precio{
     margin-right: 1rem;
+}
+.sale_precio{
+    display: block;
+    font-size: .75rem;
+    color: var(--color-medium-main);
 }
 
 .image-store{

@@ -4,26 +4,27 @@ import styles from "./dropdown.module.css";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-
-
-export default function Dropdown({includedStores}: {includedStores: string[]}) {
+export default function Dropdown({
+  includedStores,
+}: {
+  includedStores: string[];
+}) {
   const searchParams = useSearchParams(); // Parámetros de la URL actual
   const pathname = usePathname(); // Ruta actual sin query params
   const { replace } = useRouter(); // Para cambiar la URL actual
   const [initialized, setInitialized] = useState(false);
-  const tiendaMapReversa: { [name: string]: string } = {
-    farmatodo: "ftm",
-    tuzonamarket: "tzm",
-    kromionline: "km",
-    promarketonline: "pm",
-  };
-  
 
   useEffect(() => {
+    const tiendaMapReversa: { [name: string]: string } = {
+      farmatodo: "fmt",
+      tuzonamarket: "tzm",
+      kromio: "km",
+      promarket: "pm",
+    };
     if (!initialized && searchParams && pathname) {
       if (!searchParams?.get("store")) {
         const params = new URLSearchParams(searchParams?.toString() || "");
-        
+
         params.set("store", tiendaMapReversa[includedStores[0]]);
         replace(`${pathname}?${params.toString()}`);
       }
@@ -38,10 +39,17 @@ export default function Dropdown({includedStores}: {includedStores: string[]}) {
     ) {
       const params = new URLSearchParams(searchParams?.toString() || "");
       params.set("store", tiendaMapReversa[includedStores[0]]);
-      
+
       replace(`${pathname}?${params.toString()}`);
     }
-  }, [initialized, searchParams, pathname, replace, setInitialized, includedStores, tiendaMapReversa]);
+  }, [
+    initialized,
+    searchParams,
+    pathname,
+    replace,
+    setInitialized,
+    includedStores,
+  ]);
 
   function onClick(event: any) {
     const element = event.target;
@@ -118,42 +126,50 @@ export default function Dropdown({includedStores}: {includedStores: string[]}) {
           )}
         </li>
         <ul id="dropdownTiendas" className={styles["list-store-options"]}>
-          <li onClick={onClick} className={styles["store-option"]}>
-            <Image
-              className={styles["image-store"]}
-              src="/icons/banner-farmatodo.svg"
-              width={100}
-              height={20}
-              alt="Farmatodo"
-            />
-          </li>
-          <li onClick={onClick} className={styles["store-option"]}>
-            <Image
-              className={`${styles["image-store"]} ${styles["image-tzm"]}`}
-              src="/icons/banner-tzm.webp"
-              width={100}
-              height={20}
-              alt="Tu Zona Market"
-            />
-          </li>
-          <li onClick={onClick} className={styles["store-option"]}>
-            <Image
-              className={`${styles["image-store"]} ${styles["image-km"]}`}
-              src="/icons/banner_kromi_1.svg"
-              width={100}
-              height={20}
-              alt="Kromi"
-            />
-          </li>
-          <li onClick={onClick} className={styles["store-option"]}>
-            <Image
-              className={`${styles["image-store"]} ${styles["image-pm"]}`}
-              src="/icons/banner_promarket.png"
-              width={100}
-              height={20}
-              alt="Promarket"
-            />
-          </li>
+          {includedStores.includes("farmatodo") && (
+            <li onClick={onClick} className={styles["store-option"]}>
+              <Image
+                className={styles["image-store"]}
+                src="/icons/banner-farmatodo.svg"
+                width={100}
+                height={20}
+                alt="Farmatodo"
+              />
+            </li>
+          )}
+          {includedStores.includes("tuzonamarket") && (
+            <li onClick={onClick} className={styles["store-option"]}>
+              <Image
+                className={`${styles["image-store"]} ${styles["image-tzm"]}`}
+                src="/icons/banner-tzm.webp"
+                width={100}
+                height={20}
+                alt="Tu Zona Market"
+              />
+            </li>
+          )}
+          {includedStores.includes("kromi") && (
+            <li onClick={onClick} className={styles["store-option"]}>
+              <Image
+                className={`${styles["image-store"]} ${styles["image-km"]}`}
+                src="/icons/banner_kromi_1.svg"
+                width={100}
+                height={20}
+                alt="Kromi"
+              />
+            </li>
+          )}
+          {includedStores.includes("promarket") && (
+            <li onClick={onClick} className={styles["store-option"]}>
+              <Image
+                className={`${styles["image-store"]} ${styles["image-pm"]}`}
+                src="/icons/banner_promarket.png"
+                width={100}
+                height={20}
+                alt="Promarket"
+              />
+            </li>
+          )}
         </ul>
       </ul>
       <Image

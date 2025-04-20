@@ -33,7 +33,7 @@ export default function Tendency({
         <div className={`${styles["container-tendency-store-2"]}`}>
           <div className={`${styles["container-tendency-store-info"]}`}>
             <div className={`${styles["tendency-store-info"]}`}>
-              {infoTendency.tendencia_store.tendencia >= 0
+              {infoTendency.tendencia_store.tendencia > 0
                 ? "En subida"
                 : "En bajada"}
             </div>
@@ -44,7 +44,7 @@ export default function Tendency({
               $ {infoTendency.tendencia_store.price}
             </div>
             <div className={`${styles["tendency-store-line"]}`}>
-              {infoTendency.tendencia_store.tendencia < 0 ? (
+              {infoTendency.tendencia_store.tendencia <= 0 ? (
                 <>
                   <Image
                     width={24}
@@ -71,7 +71,7 @@ export default function Tendency({
               )}
             </div>
             <span className={`${styles["tendency-store-time-2"]}`}>
-              {infoTendency.tendencia_store.tendencia >= 0
+              {infoTendency.tendencia_store.tendencia > 0
                 ? "Alcista"
                 : "Bajista"}
             </span>
@@ -79,7 +79,7 @@ export default function Tendency({
           <Image
             className={`${styles["image-tendency-store"]}`}
             src={
-              infoTendency.tendencia_store.tendencia >= 0
+              infoTendency.tendencia_store.tendencia > 0
                 ? "/icons/high_tendency.svg"
                 : "/icons/low_tendency.svg"
             }
@@ -106,7 +106,7 @@ export default function Tendency({
               $ {infoTendency.mean_price}
             </div>
             <div className={`${styles["tendency-store-line"]}`}>
-              {infoTendency.tendecia_media < 0 ? (
+              {infoTendency.tendecia_media <= 0 ? (
                 <>
                   <Image
                     width={24}
@@ -139,7 +139,7 @@ export default function Tendency({
           <Image
             className={`${styles["image-tendency-store"]}`}
             src={
-              infoTendency.tendecia_media >= 0
+              infoTendency.tendecia_media > 0
                 ? "/icons/high_tendency.svg"
                 : "/icons/low_tendency.svg"
             }
