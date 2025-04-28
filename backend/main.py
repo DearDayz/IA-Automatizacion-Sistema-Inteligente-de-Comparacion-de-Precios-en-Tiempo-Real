@@ -21,10 +21,10 @@ async def lifespan(app: FastAPI, conn: asyncpg.Connection = Depends(get_db)):
     scheduler = AsyncIOScheduler()
 
     # Para testear el scraper
-    scheduler.add_job(scrape_pages, 'interval', minutes=60)
+    # scheduler.add_job(scrape_pages, 'interval', minutes=60)
 
     # Cron job para produccion
-    # scheduler.add_job(scrape_pages, 'cron', day_of_week='sun', hour=2)
+    scheduler.add_job(scrape_pages, 'cron', day_of_week='sun', hour=2)
     scheduler.start()
 
     yield # Separa el código de inicio del código de cierre de la aplicación

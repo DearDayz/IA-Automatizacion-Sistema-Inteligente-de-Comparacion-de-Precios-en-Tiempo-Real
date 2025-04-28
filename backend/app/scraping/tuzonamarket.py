@@ -91,7 +91,7 @@ async def scrape_tuzonamarket():
                             if price_match:
                                 product['price'] = price_match.group(0).replace(',', '.')
 
-                        if product['name'] and product['price'] and product['image'] and product not in all_products:
+                        if product['name'] and product['price'] and product['image'] != '' and product not in all_products:
                             all_products.append(product)
 
             await browser.close()

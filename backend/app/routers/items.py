@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-import asyncpg
+import asyncpg, json
 from app.database.dependencies import get_db
 from typing import List, Dict
 
@@ -8,6 +8,22 @@ router = APIRouter()
 
 @router.get("/")
 async def get_items(conn: asyncpg.Connection = Depends(get_db)) -> List[Dict]:
+    # rows = await conn.fetch("""
+    #     SELECT
+    #         i.id,
+    #         i.name,
+    #         i.category,
+    #         i.view_count,
+    #         MIN(p.price) AS min_price,
+    #         MAX(p.price) AS max_price,
+    #         AVG(p.price) AS avg_price,
+    #         (SELECT image FROM Product WHERE item_id = i.id ORDER BY price ASC LIMIT 1) AS min_price_image,
+    #         (SELECT image FROM Product WHERE item_id = i.id ORDER BY price DESC LIMIT 1) AS max_price_image
+    #     FROM Item i
+    #     LEFT JOIN Product p ON i.id = p.item_id
+    #     GROUP BY i.id
+    # """)
+
     rows = await conn.fetch("""
         SELECT
             i.id,
@@ -18,10 +34,12 @@ async def get_items(conn: asyncpg.Connection = Depends(get_db)) -> List[Dict]:
             MAX(p.price) AS max_price,
             AVG(p.price) AS avg_price,
             (SELECT image FROM Product WHERE item_id = i.id ORDER BY price ASC LIMIT 1) AS min_price_image,
-            (SELECT image FROM Product WHERE item_id = i.id ORDER BY price DESC LIMIT 1) AS max_price_image
+            (SELECT image FROM Product WHERE item_id = i.id ORDER BY price DESC LIMIT 1) AS max_price_image,
+            COUNT(p.id) AS product_count
         FROM Item i
         LEFT JOIN Product p ON i.id = p.item_id
         GROUP BY i.id
+        HAVING COUNT(p.id) >= 2
     """)
 
     result = []
@@ -49,7 +67,7 @@ async def get_items(conn: asyncpg.Connection = Depends(get_db)) -> List[Dict]:
     return result
 
 @router.get("/id/{item_id}/")
-async def get_item_with_products_by_id(item_id: int, conn: asyncpg.Connection = Depends(get_db)) -> Dict:
+async def get_item_with_products_and_history_by_id(item_id: int, conn: asyncpg.Connection = Depends(get_db)) -> Dict:
     try:
         rows = await conn.fetch("""
             SELECT
@@ -82,20 +100,23 @@ async def get_item_with_products_by_id(item_id: int, conn: asyncpg.Connection = 
 
         for row in rows:
             if row['product_id'] is not None:
-                item['products'].append({
+                product = {
                     'id': row['product_id'],
                     'name': row['product_name'],
                     'tendency': row['product_tendency'],
                     'url': row['product_url'],
                     'price': row['product_price'],
                     'sale_price': row['product_sale_price'],
-                    'image': row['product_image']
-                })
+                    'image': row['product_image'],
+                    'history': await get_product_history(row['product_id'], conn)
+                }
+                item['products'].append(product)
 
         return item
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # Ruta para aumentar en uno el contador de vistas del Item según su ID
 @router.patch("/view/{item_id}/")
@@ -122,7 +143,6 @@ async def get_items_and_products(conn: asyncpg.Connection = Depends(get_db)):
             Item.id AS item_id,
             Item.name AS item_name,
             Item.category AS item_category,
-            Item.embedding AS item_embedding,
             Item.view_count AS item_view_count,
             Product.id AS product_id,
             Product.name AS product_name,
@@ -158,7 +178,55 @@ async def get_items_and_products(conn: asyncpg.Connection = Depends(get_db)):
 
     return list(items.values())
 
+@router.get("/multiple-products/")
+async def get_items_with_multiple_products(conn: asyncpg.Connection = Depends(get_db)):
+    rows = await conn.fetch("""
+        SELECT
+            Item.id AS item_id,
+            Item.name AS item_name,
+            Item.category AS item_category,
+            Item.view_count AS item_view_count,
+            COUNT(Product.id) AS product_count,
+            ARRAY_AGG(
+                json_build_object(
+                    'id', Product.id,
+                    'name', Product.name,
+                    'tendency', Product.tendency,
+                    'url', Product.url,
+                    'price', Product.price,
+                    'sale_price', Product.sale_price,
+                    'image', Product.image
+                )
+            ) FILTER (WHERE Product.id IS NOT NULL) AS products
+        FROM Item
+        LEFT JOIN Product ON Item.id = Product.item_id
+        GROUP BY Item.id, Item.name, Item.category, Item.view_count
+        HAVING COUNT(Product.id) > 1
+    """)
+    return [
+        {
+            'id': row['item_id'],
+            'name': row['item_name'],
+            'category': row['item_category'],
+            'products': [json.loads(p) for p in row['products']] if row['products'] else []
+        }
+        for row in rows
+    ]
 
+
+# --- Funciones auxiliares ---
+
+
+async def get_product_history(product_id: int, conn: asyncpg.Connection):
+    rows = await conn.fetch("""
+        SELECT date, price
+        FROM ProductPriceHistory
+        WHERE product_id = $1
+        AND date >= CURRENT_DATE - INTERVAL '6 days'
+        ORDER BY date DESC
+        LIMIT 7;
+    """, product_id)
+    return [{"date": row['date'].isoformat(), "price": row['price']} for row in rows]
 
 def extract_page_name(image_url: str) -> str:
     if image_url is None:

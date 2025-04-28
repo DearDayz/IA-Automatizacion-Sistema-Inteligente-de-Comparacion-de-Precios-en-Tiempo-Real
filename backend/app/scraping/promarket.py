@@ -88,7 +88,7 @@ async def scrape_promarket():
                             if price_match:
                                 product['price'] = price_match.group(0)
 
-                        if product['name'] and product['price']:
+                        if product['name'] and product['price'] and product['image'] != '':
                             all_products.append(product)
 
             await browser.close()
