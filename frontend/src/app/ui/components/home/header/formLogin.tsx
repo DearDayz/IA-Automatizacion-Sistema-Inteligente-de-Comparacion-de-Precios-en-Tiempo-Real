@@ -11,7 +11,7 @@ export default function FormLogin() {
   function handleClick() {
     const params = new URLSearchParams(searchParams?.toString() || "");
     params.delete("login");
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   return (

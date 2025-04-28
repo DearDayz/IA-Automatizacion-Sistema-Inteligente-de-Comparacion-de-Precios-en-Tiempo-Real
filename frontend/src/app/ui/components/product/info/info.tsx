@@ -3,8 +3,9 @@ import Image from "next/image";
 
 import Link from "next/link";
 interface Precio {
-  tienda: string /* Los nombres tienen que ser tuzonamarket, farmatodo o kromi */;
+  tienda: string /* Los nombres tienen que ser tuzonamarket, farmatodo, kromi, promarket */;
   precio: number;
+  sale_price: number;
   link: string;
 }
 
@@ -19,6 +20,7 @@ export default function Info({ product }: { product: Product }) {
     tuzonamarket: "/icons/banner-tzm.webp",
     farmatodo: "/icons/banner-farmatodo.svg",
     kromi: "/icons/banner_kromi_1.svg",
+    promarket: "/icons/banner_promarket.png",
     nada: "",
   };
 
@@ -26,6 +28,7 @@ export default function Info({ product }: { product: Product }) {
     if (tienda === "tuzonamarket") return banners.tuzonamarket;
     if (tienda === "farmatodo") return banners.farmatodo;
     if (tienda === "kromi") return banners.kromi;
+    if (tienda === "promarket") return banners.promarket;
     return banners.nada;
   }
 
@@ -42,7 +45,10 @@ export default function Info({ product }: { product: Product }) {
         />
       </div>
       <div className={`${styles["container-precios"]}`}>
-        <h2 className={`${styles["title-precios"]}`}>Precios</h2>
+        <div className={ `${styles["container-title"]}`}>
+          <h2 className={`${styles["title-precios"]}`}>Precios</h2>
+          <h2 className={`${styles["title-precios"]}`}>Enlaces</h2>
+        </div>
         <div className={`${styles["container-precios-list"]}`}>
           {product.precios.map((precio) => (
             <div
@@ -50,7 +56,19 @@ export default function Info({ product }: { product: Product }) {
               key={precio.tienda}
             >
               <div className={`${styles["container-precio-text"]}`}>
-                <span className={styles["precio"]}>${precio.precio}</span>
+                {precio.sale_price == 0 ? (
+                  <span className={styles["precio"]}>${precio.precio}</span>
+                ) : (
+                  <>
+                    <span className={styles["precio"]}>
+                      ${precio.sale_price}
+                    </span>
+
+                    <del className={styles["sale_precio"]}>
+                      ${precio.precio}
+                    </del>
+                  </>
+                )}
               </div>
               <div className={`${styles["container-image-store"]}`}>
                 <Link href={precio.link} target="_blank">

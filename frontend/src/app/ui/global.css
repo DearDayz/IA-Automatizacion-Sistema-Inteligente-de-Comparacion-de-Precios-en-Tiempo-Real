@@ -27,7 +27,8 @@ body {
 
 a{
     text-decoration: none;
-    color: var(--color-60-main);
+    /* color: var(--color-60-main); */
+    color: inherit;
 }
 
 button{
@@ -38,4 +39,8 @@ button{
 .expanded{
     width: 12rem !important;
     padding: 1rem !important;
+}
+
+.tv-lightweight-charts{
+    width: 100% !important;
 }

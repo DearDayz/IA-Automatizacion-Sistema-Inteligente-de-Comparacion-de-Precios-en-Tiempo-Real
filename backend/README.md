@@ -12,12 +12,16 @@
     python -m venv venv
   ```
 
+<<<<<<< HEAD
 3. **Activar el entorno virtual**:
 
+=======
+2. **Activar el entorno virtual**:
+>>>>>>> origin/Ale
 - En **Windows**:
 
   ```bash
-  venv\Scripts\activate.bat
+  venv\Scripts\activate
   ```
 
 - En **Linux/Mac**:
@@ -26,7 +30,7 @@
   source venv/bin/activate
   ```
 
-4. **Instalar las dependencias (Obligatoriamente en el mismo orden)**:
+3. **Instalar las dependencias (Obligatoriamente en el mismo orden)**:
 
   ```bash
   pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -35,6 +39,16 @@
   ```
   
 ## Ejecución del Servidor
+
+Para ejecutar el servidor, sigue estos pasos:
+
+1. **Ubicarte en la carpeta del proyecto**:
+
+  ```bash
+  cd backend
+  ```
+
+2. **Ejecutar el servidor**:
 
   ```bash
   fastapi dev main.py

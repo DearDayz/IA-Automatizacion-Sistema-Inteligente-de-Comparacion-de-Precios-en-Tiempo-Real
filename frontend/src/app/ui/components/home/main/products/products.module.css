@@ -27,6 +27,7 @@
     max-width: 75%;
     max-height: 200px;
     height: auto;
+    object-fit: contain;
 
 }
 
@@ -88,4 +89,13 @@
 
 .main__content-card-info-price-mean{
     border-top: var(--color-medium-main-opacity) solid 1px;
+}
+
+.kromi{
+    background-color: #000;
+}
+
+.container-button {
+    padding: 1rem;
+    width: 100%;
 }

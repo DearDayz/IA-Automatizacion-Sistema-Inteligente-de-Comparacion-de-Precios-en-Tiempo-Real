@@ -31,7 +31,7 @@ export default function Coin() {
       ) {
         const params = new URLSearchParams(searchParams.toString() || "");
         params.set("cash", "usd");
-        replace(`${pathname}?${params.toString()}`);
+        replace(`${pathname}?${params.toString()}`, { scroll: false });
         console.log("Actualizando parámetros de URL");
         setCash("$");
       }
@@ -50,7 +50,7 @@ export default function Coin() {
         setCash("Bs");
         params.set("cash", "ves");
       }
-      replace(`${pathname}?${params.toString()}`);
+      replace(`${pathname}?${params.toString()}`, { scroll: false });
       console.log("Actualizando parámetros de URL");
     }
   }, [searchParams, pathname, replace, initialized, setCash, cash]);
@@ -75,7 +75,14 @@ export default function Coin() {
       setCash("Bs");
       params.set("cash", "ves");
     }
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
+    const dropdown = document.getElementById("dropdownMonedas");
+    if (dropdown) {
+      dropdown.style.display = "none";
+      setTimeout(() => {
+        dropdown.style.display = "";
+      }, 100);
+    }
   };
 
   return (
@@ -94,7 +101,7 @@ export default function Coin() {
         <span className={styles["header__option-coin-text-select"]}>
           {money}
         </span>
-        <ul className={styles["header__option-coin-list"]}>
+        <ul id="dropdownMonedas" className={styles["header__option-coin-list"]}>
           <li className={styles["header__option-coin-divider"]}></li>
           <li
             onClick={(event) =>

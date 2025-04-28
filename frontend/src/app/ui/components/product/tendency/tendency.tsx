@@ -1,9 +1,10 @@
 import styles from "./tendency.module.css";
 import Image from "next/image";
+import Dropdown from "./dropdown/dropdown";
 interface TendenciaStore {
   tienda: string;
   price: number;
-  tendecia: number;
+  tendencia: number;
 }
 
 interface InfoTendency {
@@ -12,25 +13,27 @@ interface InfoTendency {
   tendencia_store: TendenciaStore;
 }
 
+
 export default function Tendency({
-  infoTendency,
+  infoTendency, 
+  includedStores
 }: {
   infoTendency: InfoTendency;
+  includedStores: string[];
 }) {
+  console.log("Informacion de la tendencia", infoTendency);
+  console.log("Tiendas incluidas", includedStores);
   return (
     <div className={`${styles["tendency"]}`}>
       <div className={`${styles["container-tendency-store"]}`}>
         <div className={styles["container-title"]}>
           <h2 className={styles["title"]}>Tendencia</h2>
-          <div className={styles["title"]}>
-            {infoTendency.tendencia_store.tienda}
-          </div>
-          
+          <Dropdown includedStores={includedStores}></Dropdown>
         </div>
         <div className={`${styles["container-tendency-store-2"]}`}>
           <div className={`${styles["container-tendency-store-info"]}`}>
             <div className={`${styles["tendency-store-info"]}`}>
-              {infoTendency.tendencia_store.tendecia >= 0
+              {infoTendency.tendencia_store.tendencia > 0
                 ? "En subida"
                 : "En bajada"}
             </div>
@@ -41,7 +44,7 @@ export default function Tendency({
               $ {infoTendency.tendencia_store.price}
             </div>
             <div className={`${styles["tendency-store-line"]}`}>
-              {infoTendency.tendencia_store.tendecia < 0 ? (
+              {infoTendency.tendencia_store.tendencia <= 0 ? (
                 <>
                   <Image
                     width={24}
@@ -50,7 +53,7 @@ export default function Tendency({
                     alt="Lowest Icon"
                   />
                   <span className={`${styles["bajada"]}`}>
-                    {infoTendency.tendencia_store.tendecia}%
+                    {infoTendency.tendencia_store.tendencia}%
                   </span>
                 </>
               ) : (
@@ -62,18 +65,24 @@ export default function Tendency({
                     alt="Highest Icon"
                   />
                   <span className={`${styles["subida"]}`}>
-                    {infoTendency.tendencia_store.tendecia}%
+                    {infoTendency.tendencia_store.tendencia}%
                   </span>
                 </>
               )}
             </div>
             <span className={`${styles["tendency-store-time-2"]}`}>
-                { infoTendency.tendencia_store.tendecia >= 0 ? "Alcista" : "Bajista" }
+              {infoTendency.tendencia_store.tendencia > 0
+                ? "Alcista"
+                : "Bajista"}
             </span>
           </div>
           <Image
-          className={ `${styles["image-tendency-store"]}` }
-            src={ infoTendency.tendencia_store.tendecia >= 0 ? "/icons/high_tendency.svg" : "/icons/low_tendency.svg" }
+            className={`${styles["image-tendency-store"]}`}
+            src={
+              infoTendency.tendencia_store.tendencia > 0
+                ? "/icons/high_tendency.svg"
+                : "/icons/low_tendency.svg"
+            }
             alt="Highest Tendency"
             width={200}
             height={100}
@@ -83,16 +92,12 @@ export default function Tendency({
       <div className={`${styles["container-tendency-store"]}`}>
         <div className={styles["container-title"]}>
           <h2 className={styles["title"]}>Tendencia</h2>
-          <div className={styles["title"]}>
-            Promedio
-          </div>
+          <div className={styles["title"]}>Promedio</div>
         </div>
         <div className={`${styles["container-tendency-store-2"]}`}>
           <div className={`${styles["container-tendency-store-info"]}`}>
             <div className={`${styles["tendency-store-info"]}`}>
-              {infoTendency.tendecia_media>= 0
-                ? "En subida"
-                : "En bajada"}
+              {infoTendency.tendecia_media >= 0 ? "En subida" : "En bajada"}
             </div>
             <div className={`${styles["tendency-store-time"]}`}>
               Ultimos 7 dias
@@ -101,7 +106,7 @@ export default function Tendency({
               $ {infoTendency.mean_price}
             </div>
             <div className={`${styles["tendency-store-line"]}`}>
-              {infoTendency.tendecia_media < 0 ? (
+              {infoTendency.tendecia_media <= 0 ? (
                 <>
                   <Image
                     width={24}
@@ -128,12 +133,16 @@ export default function Tendency({
               )}
             </div>
             <span className={`${styles["tendency-store-time-2"]}`}>
-                { infoTendency.tendecia_media >= 0 ? "Alcista" : "Bajista" }
+              {infoTendency.tendecia_media >= 0 ? "Alcista" : "Bajista"}
             </span>
           </div>
           <Image
-          className={ `${styles["image-tendency-store"]}` }
-            src={ infoTendency.tendecia_media >= 0 ? "/icons/high_tendency.svg" : "/icons/low_tendency.svg" }
+            className={`${styles["image-tendency-store"]}`}
+            src={
+              infoTendency.tendecia_media > 0
+                ? "/icons/high_tendency.svg"
+                : "/icons/low_tendency.svg"
+            }
             alt="Highest Tendency"
             width={200}
             height={100}

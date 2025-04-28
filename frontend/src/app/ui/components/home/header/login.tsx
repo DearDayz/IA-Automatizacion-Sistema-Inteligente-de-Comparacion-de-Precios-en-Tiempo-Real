@@ -12,7 +12,7 @@ export default function Login() {
   function handleClick() {
     const params = new URLSearchParams(searchParams?.toString() || "");
     params.set("login", "open");
-    replace(`${pathname}?${params.toString()}`);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   return (

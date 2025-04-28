@@ -7,6 +7,7 @@
     border-radius: 15px;
     filter: drop-shadow(0 0 4px #0001);
     align-items: center;
+    max-width: 300px;
 }
 
 .title{
@@ -37,6 +38,12 @@
     font-weight: 600;
 }
 
+.container-title{
+    display: flex;
+    justify-content: space-between;
+    
+}
+
 .container-precio{
     display: flex;
     justify-content: space-between;
@@ -47,11 +54,16 @@
 .precio{
     margin-right: 1rem;
 }
+.sale_precio{
+    display: block;
+    font-size: .75rem;
+    color: var(--color-medium-main);
+}
 
 .image-store{
     width: 100px;
     height: auto;
-    border-radius: 0px;
+    border-radius: 3px;
 }
 
 .farmatodo{
@@ -59,12 +71,21 @@
 }
 
 .tuzonamarket{
-    aspect-ratio: 15/2;
+    /* aspect-ratio: 15/2; */
+    width: 108px;
+    border: 2px solid #1f9741;
     background-color: #1f9741;
 }
 
 .kromi{
-    aspect-ratio: 200/89;
+    aspect-ratio: 200 / 89;
     background-color: #0166d3;
-    width: 50px;
+    width: 58px;
+    border: 2px solid #0166d3;
+}
+
+.promarket{
+    background-color: #0f76b6;
+    width: 78px;
+    border: 2px solid #0f76b6;
 }
