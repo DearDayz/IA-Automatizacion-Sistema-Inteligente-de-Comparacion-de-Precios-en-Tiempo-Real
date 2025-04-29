@@ -1,24 +1,15 @@
-import { console } from "inspector";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 // Definir la estructura de la respuesta de la API externa
-interface CurrencyData {
-  symbol: string;
-  value: string;
-}
+
 
 interface ExchangeRateResponse {
-  error: boolean;
-  error_message: string[];
-  data: {
-    euro: CurrencyData;
-    yuan: CurrencyData;
-    lira: CurrencyData;
-    rublo: CurrencyData;
-    dolar: CurrencyData;
-    effective_date: string;
-    run_timestamp: string;
-  };
+  fuente: string;
+  nombre: string;
+  compra: null | string;
+  venta: null | string;
+  promedio: number;
+  fechaActualizacion: string;
 }
 
 export default async function handler(
@@ -27,7 +18,7 @@ export default async function handler(
 ) {
   try {
 
-    const response = await fetch("https://bcv-exchange-rates.vercel.app/get_exchange_rates", {
+    const response = await fetch("https://ve.dolarapi.com/v1/dolares", {
       next: { revalidate: 60 * 30 }
     }).then(res => {
       if (!res.ok) throw new Error(res.statusText);
@@ -35,9 +26,9 @@ export default async function handler(
     });
 
 
-    const data: ExchangeRateResponse = response;
+    const data: ExchangeRateResponse[] = response;
 
-    res.status(200).json(data);
+    res.status(200).json(data[0].promedio);
   } catch (error) {
     console.error("Error obteniendo la tasa de cambio:", error);
     res.status(500).json({ error: "No se pudo obtener la tasa de cambio" });

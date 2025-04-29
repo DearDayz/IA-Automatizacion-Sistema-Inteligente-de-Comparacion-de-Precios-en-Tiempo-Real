@@ -58,8 +58,8 @@ export default function Coin() {
   useEffect(() => {
     async function fetchPrice() {
       const response = await fetch("/api/price-dolar");
-      const { data } = await response.json();
-      const price = parseFloat(data.dolar.value).toFixed(2);
+      const data  = await response.json();
+      const price = parseFloat(data).toFixed(2);
       setRate(parseFloat(price));
       setPrice(price.toString());
     }
