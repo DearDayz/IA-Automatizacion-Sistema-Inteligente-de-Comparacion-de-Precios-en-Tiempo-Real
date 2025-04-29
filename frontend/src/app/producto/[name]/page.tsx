@@ -143,19 +143,44 @@ export default async function ProductPage(props: {
   const id = decodeNameArray[decodeNameArray.length - 1].slice(2);
   const searchParams = await props.searchParams;
   const url = "https://n5tz68kn-8000.use.devtunnels.ms/items/id/" + id + "/";
+  console.log("url", url);
+
+  async function getProduct(url) {
+    try {
+      const res = await fetch(url, { next: { revalidate: 60 * 30 } });
+      
+      // Clonamos antes de leer:
+      const clone = res.clone();
+      const text = await clone.text();
+      console.log("res en formato text:", text);
+      
+      if (!res.ok) throw new Error(res.statusText);
+      
+      const data = await res.json();
+      console.log("res en formato json:", data);
+      return data;
+    } catch (error) {
+      console.error("Error obteniendo el producto:", error);
+      const fallback = await fetch(url, { cache: 'no-store' });
+      if (!fallback.ok) throw error;
+      return await fallback.json();
+    }
+  }
   
-  const product = await fetch(url, {
-    next: { revalidate: 60 * 30 }, // cache por 60 min antes de volver a fetch
-  }).then((res) => {
-    if (!res.ok) throw new Error(res.statusText);
-    return res.json();
-  });
+  const product = await getProduct(url);
   if (!product) {
     notFound();
   }
-  fetch("https://n5tz68kn-8000.use.devtunnels.ms/items/view/" + id + "/", {
+  /* await fetch("https://n5tz68kn-8000.use.devtunnels.ms/items/view/" + id + "/", {
     method: "PATCH",
-  });
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("fetch para acumular vistas", data);
+    })
+    .catch((error) => {
+      console.error("Error en el fetch para acumular vistas:", error);
+    }); */
 
   const exampleProductInfo = {
     name: product.name.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase()),

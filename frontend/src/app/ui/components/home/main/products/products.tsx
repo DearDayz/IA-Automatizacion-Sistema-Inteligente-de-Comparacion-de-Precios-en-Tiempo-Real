@@ -118,9 +118,10 @@ export default async function Products({
 
   const AllItems = await fetch('https://n5tz68kn-8000.use.devtunnels.ms/items/', {
     next: { revalidate: 60*60 }   // cache por 60 min antes de volver a fetch
-  }).then(res => {
+  }).then(async res => {
+    const data = await res.json();
     if (!res.ok) throw new Error(res.statusText);
-    return res.json();
+    return data;
   }); 
   
   

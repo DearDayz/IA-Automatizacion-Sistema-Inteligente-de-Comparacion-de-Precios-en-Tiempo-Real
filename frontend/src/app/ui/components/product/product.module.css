@@ -10,3 +10,11 @@
     font-family: var(--font-text);
     align-items: flex-start;
 }
+
+@media screen and (max-width: 1050px) {
+    .main{
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+}
