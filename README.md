@@ -44,7 +44,6 @@ Scraping	Selenium, Scrapy, BeautifulSoup
 IA/ML	Scikit-learn, Pandas, NumPy, XGBoost
 Infraestructura	Docker, Vercel, Balanceo de carga
 🔮 Proyecciones de IA en Acción
-https://via.placeholder.com/600x300/2d3748/ffffff?text=Visualizaci%C3%B3n+de+Tendencias+con+IA
 
 ⚡️ Métricas de Rendimiento
 ⏱️ Tiempo de respuesta: < 1.5 segundos
