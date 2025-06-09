@@ -20,7 +20,6 @@ Sistema web innovador que automatiza la extracción y análisis de precios de ti
 | **Optimización de Scraping** | Rotación de IPs + Agentes de usuario | Maximiza eficiencia y evita bloqueos |
 
 ### ⚙️ Sistema Automatizado
-```mermaid
 graph LR
 A[Scraping Automatizado] --> B[Procesamiento en Tiempo Real]
 B --> C[Almacenamiento en PostgreSQL]
