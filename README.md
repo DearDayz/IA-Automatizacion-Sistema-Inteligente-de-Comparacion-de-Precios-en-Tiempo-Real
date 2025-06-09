@@ -1,7 +1,5 @@
 # 🚀 Sistema Automatizado de Inteligencia para Comparación de Precios en Tiempo Real
 
-![Banner de Automatización](https://via.placeholder.com/1200x400/1a202c/ffffff?text=Sistema+Web+Avanzado+de+Comparación+de+Precios)
-
 **Potenciado por IA predictiva y automatización avanzada para el mercado de Carabobo**
 
 ## 🔍 Visión General
